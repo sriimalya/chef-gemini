@@ -1,7 +1,10 @@
 import { useState } from "react";
+import IngredientList from "./IngredientList";
+import Recipe from "./Recipe";
 
 export default function Main() {
   const [ingredients, setAddIngredients] = useState([]);
+  const [isShown, setIsShown] = useState(false)
 
   function handleSubmit(formData) {
     const newIngredient = formData.get("ingredient");
@@ -10,11 +13,9 @@ export default function Main() {
     }
   }
 
-  const ingredientListItems = ingredients.map((ingredient, i) => <li key={i}>{ingredient}</li>);
-  console.log(ingredientListItems)
-  console.log(typeof(ingredientListItems))
-
-
+  function toggleRecipe(){
+    setIsShown(prevShown => !prevShown)
+  }
   return (
     <main>
       <form className="search-section" action={handleSubmit}>
@@ -26,22 +27,16 @@ export default function Main() {
         />
         <button type="submit">+ Add Ingredient</button>
       </form>
+
       <div className="ingredient-list-section">
+
         <h1>Ingredients on Hand:</h1>
 
-        {ingredients.length > 0 && <ul className="ingredient-list">{ingredientListItems}</ul>}
+        {ingredients.length > 0 ? <IngredientList ingredients={ingredients} toggleRecipe={toggleRecipe}/>  : <p>You've not added any ingredients yet</p>}
 
-        {
-          ingredients.length > 0 &&
-          <div className="get-recipe">
-          <div>
-            <h3>Ready for a recipe?</h3>
-            <p>Generate a recipe from your list of ingredients.</p>
-          </div>
-          <button>Get a recipe</button>
-          </div>
-        }
       </div>
+
+      {isShown && <Recipe ingredients={ingredients}/>}
     </main>
   );
 }

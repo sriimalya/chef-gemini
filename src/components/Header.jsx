@@ -1,10 +1,10 @@
-import ChefIcon from '../assets/chef-claude-icon.png'
+import ChefIcon from '../assets/chef-icon.png'
 
 function Header() {
   return (
     <header>
         <img src={ChefIcon} alt="logo"/>
-        <p>Chef Claude</p>
+        <p>Chef Gemini</p>
     </header>
   )
 }
