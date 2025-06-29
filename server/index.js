@@ -10,7 +10,7 @@ app.use(express.json());
 
 dotenv.config();
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -55,4 +55,4 @@ Make the recipe authentic yet accessible for home cooking.`;
   }
 });
 
-app.listen();
+app.listen(PORT);
