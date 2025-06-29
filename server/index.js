@@ -55,6 +55,4 @@ Make the recipe authentic yet accessible for home cooking.`;
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+app.listen();
