@@ -284,10 +284,6 @@ main{
 }
 
 @media (max-width: 768px) {
-
-  .search-section > button{
-  padding: 12px 10px;
-}
   .get-recipe {
     gap: 4px;
     padding: 16px 20px;
@@ -318,13 +314,14 @@ main{
   }
 
   .search-section > input {
-    width: 100%;
-    padding: 10px 12px;
+    width: 70%;
+    padding: 12px 14px;
     font-size: 0.9rem;
   }
 
   .search-section > button {
-    padding: 6px 10px;
+    width: 28%;
+    padding: 8px 12px;
     font-size: 0.75rem;
   }
 
