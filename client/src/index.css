@@ -311,7 +311,7 @@ main{
   }
 }
 
-@media (max-width: 300px) {
+@media (max-width: 480px) {
 
   .search-section{
     gap: 8px;
