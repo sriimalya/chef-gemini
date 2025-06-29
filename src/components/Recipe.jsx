@@ -1,34 +1,23 @@
-import { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown'
 
 
-export default function Recipe({ingredients}) {
-    const [recipe, setRecipe] = useState("loading..")
-
-    useEffect(() => {
-        async function getRecipe() {
-            try {
-                const res = await fetch("http://localhost:5000/get-recipe", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ingredients}),
-                });
-                const data = await res.json();
-                setRecipe(data.recipe || "No recipe returned.");
-            } catch (err) {
-                console.error("Fetch error:", err);
-                setRecipe("Failed to load recipe.");
-            }
-        }
-
-        getRecipe();
-    }, [ingredients]);
-
+export default function Recipe({recipe, loading}) {
+    if (loading) {
+    return (
+      <div className="recipe-box loading">
+        <h2>Generating your recipe...</h2>
+        <div className="dots">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    );
+  }
     return (
         <div className="recipe-box">
             <h2>Generated Recipe:</h2>
-            <pre>{recipe}</pre>
+            <ReactMarkdown>
+            {recipe}
+            </ReactMarkdown>
         </div>
     );
 }

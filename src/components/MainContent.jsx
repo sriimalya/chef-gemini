@@ -4,7 +4,9 @@ import Recipe from "./Recipe";
 
 export default function Main() {
   const [ingredients, setAddIngredients] = useState([]);
-  const [isShown, setIsShown] = useState(false)
+  const [loading, setLoading] = useState(false);
+
+  const [recipe, setRecipe] = useState("");
 
   function handleSubmit(formData) {
     const newIngredient = formData.get("ingredient");
@@ -13,9 +15,26 @@ export default function Main() {
     }
   }
 
-  function toggleRecipe(){
-    setIsShown(prevShown => !prevShown)
+  async function getRecipe() {
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/get-recipe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ingredients }),
+      });
+      const data = await res.json();
+      setRecipe(data.recipe || "No recipe returned.");
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setRecipe("Failed to load recipe.");
+    } finally {
+    setLoading(false);
   }
+  }
+
   return (
     <main>
       <form className="search-section" action={handleSubmit}>
@@ -28,15 +47,10 @@ export default function Main() {
         <button type="submit">+ Add Ingredient</button>
       </form>
 
-      <div className="ingredient-list-section">
 
-        <h1>Ingredients on Hand:</h1>
+      <IngredientList ingredients={ingredients} getRecipe={getRecipe} />
 
-        {ingredients.length > 0 ? <IngredientList ingredients={ingredients} toggleRecipe={toggleRecipe}/>  : <p>You've not added any ingredients yet</p>}
-
-      </div>
-
-      {isShown && <Recipe ingredients={ingredients}/>}
+      { recipe.length > 0 || loading ? <Recipe recipe={recipe} loading={loading} /> : null }
     </main>
   );
 }
