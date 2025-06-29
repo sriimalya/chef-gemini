@@ -18,7 +18,7 @@ export default function Main() {
   async function getRecipe() {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/get-recipe", {
+      const res = await fetch("https://chef-gemini.onrender.com", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
