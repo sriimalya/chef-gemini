@@ -43,7 +43,7 @@ REQUIREMENTS:
 Make the recipe authentic yet accessible for home cooking.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite-preview-06-17",
       contents: prompt,
     });
 
