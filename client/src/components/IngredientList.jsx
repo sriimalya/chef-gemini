@@ -9,9 +9,16 @@ export default function IngredientList({ ingredients, getRecipe }) {
         <h1>Ingredients on Hand:</h1>
 
         {ingredients.length > 0 ? (
+          <>
           <ul className="ingredient-list">{ingredientListItems}</ul>
+          {ingredients.length < 3 && (
+              <p className="not-enough-ingredient">
+                *add at least 3 ingredients to generate a recipe.
+              </p>
+          )}
+          </>
         ) : (
-          <p>You've not added any ingredients yet</p>
+          <p>You've not added any ingredients yet.</p>
         )}
       </div>
       {ingredients.length > 2 && (
