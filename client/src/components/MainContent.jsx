@@ -26,7 +26,7 @@ export default function Main() {
     setRecipeStale(false);
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/get-recipe", {
+      const res = await fetch("https://chef-gemini.onrender.com/get-recipe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
