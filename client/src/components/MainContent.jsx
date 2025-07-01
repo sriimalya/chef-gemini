@@ -1,29 +1,37 @@
 import { useState } from "react";
 import IngredientList from "./IngredientList";
 import Recipe from "./Recipe";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Main() {
-  const [ingredients, setAddIngredients] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [recipe, setRecipe] = useState("");
+  const [recipeStale, setRecipeStale] = useState(false);
 
   function handleSubmit(formData) {
-    const newIngredient = formData.get("ingredient");
-    if (newIngredient) {
-      setAddIngredients([newIngredient, ...ingredients]);
+    const newIngredientName = formData.get("ingredient");
+    if (newIngredientName) {
+      const newIngredient = {
+        id: uuidv4().slice(0, 8),
+        name: newIngredientName,
+      };
+      setIngredients([newIngredient, ...ingredients]);
+      setRecipeStale(true);
     }
   }
 
   async function getRecipe() {
+    setRecipeStale(false);
     setLoading(true);
     try {
-      const res = await fetch("https://chef-gemini.onrender.com/get-recipe", {
+      const res = await fetch("http://localhost:5000/get-recipe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ingredients }),
+        body: JSON.stringify({ ingredients: ingredients.map((i) => i.name) }),
       });
       const data = await res.json();
       setRecipe(data.recipe || "No recipe returned.");
@@ -31,8 +39,17 @@ export default function Main() {
       console.error("Fetch error:", err);
       setRecipe("Failed to load recipe.");
     } finally {
-    setLoading(false);
+      setLoading(false);
+    }
   }
+
+  function removeIngredient(id) {
+    const newIngredients = ingredients.filter(
+      (ingredient) => ingredient.id !== id
+    );
+    setIngredients(newIngredients);
+    if (newIngredients.length < 3) setRecipe("");
+    setRecipeStale(true);
   }
 
   return (
@@ -47,10 +64,26 @@ export default function Main() {
         <button type="submit">+ Add Ingredient</button>
       </form>
 
+      <IngredientList
+        ingredients={ingredients}
+        getRecipe={getRecipe}
+        removeIngredient={removeIngredient}
+      />
 
-      <IngredientList ingredients={ingredients} getRecipe={getRecipe} />
+      {recipe.length > 0 && recipeStale && ingredients.length >= 3 && (
+        <div className="warning">
+          <span className="warning-icon">⚠️</span>
+          <div className="warning-text">
+            <strong>Ingredient list changed.</strong>
+            <br />
+            Please regenerate the recipe to reflect the updated list.
+          </div>
+        </div>
+      )}
 
-      { recipe.length > 0 || loading ? <Recipe recipe={recipe} loading={loading} /> : null }
+      {recipe.length > 0 || loading ? (
+        <Recipe recipe={recipe} loading={loading} />
+      ) : null}
     </main>
   );
 }

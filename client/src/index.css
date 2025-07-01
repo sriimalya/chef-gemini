@@ -118,6 +118,32 @@ main {
   color: #3c4043;
 }
 
+.list-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 70%;
+}
+
+.ingredient-name {
+  width: 75%;
+  overflow-wrap: break-word;
+}
+
+.remove-icon {
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 2px 4px;
+}
+
+.remove-icon svg:hover {
+  cursor: pointer;
+  color: #d93025;
+}
+
 .get-recipe {
   display: flex;
   justify-content: space-between;
@@ -157,6 +183,23 @@ main {
 
 .get-recipe button:hover {
   background-color: #185abc;
+}
+
+.warning {
+  color: #856404;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.warning-icon{
+  font-size: 1.5rem;
+  line-height: 1;
+  display: inline-block;
 }
 
 .recipe-box {
@@ -324,14 +367,14 @@ main {
   }
 
   .search-section>input {
-    width: 70%;
+    width: 65%;
     padding: 12px 14px;
     font-size: 0.9rem;
   }
 
   .search-section>button {
-    width: 28%;
-    padding: 8px 12px;
+    width: 30%;
+    padding: 8px 10px;
     font-size: 0.75rem;
   }
 
@@ -342,6 +385,10 @@ main {
 
   .ingredient-list-section h1 {
     font-size: 1.2rem;
+  }
+
+  .list-content {
+    width: 100%;
   }
 
 }

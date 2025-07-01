@@ -1,6 +1,14 @@
-export default function IngredientList({ ingredients, getRecipe }) {
-  const ingredientListItems = ingredients.map((ingredient, i) => (
-    <li key={i}>{ingredient}</li>
+import { Trash2 } from 'lucide-react';
+
+export default function IngredientList({ ingredients, getRecipe, removeIngredient }) {
+  const ingredientListItems = ingredients.map((ingredient) => (
+    <li key={ingredient.id}>
+      <div className='list-content'>
+        <span className='ingredient-name'>{ingredient.name}</span>  
+        <button className='remove-icon' onClick={()=>removeIngredient(ingredient.id)}><Trash2 size={20} /></button>
+      </div>
+    </li>
+
   ));
 
   return (
@@ -10,12 +18,12 @@ export default function IngredientList({ ingredients, getRecipe }) {
 
         {ingredients.length > 0 ? (
           <>
-          <ul className="ingredient-list">{ingredientListItems}</ul>
-          {ingredients.length < 3 && (
+            <ul className="ingredient-list">{ingredientListItems}</ul>
+            {ingredients.length < 3 && (
               <p className="not-enough-ingredient">
                 *add at least 3 ingredients to generate a recipe.
               </p>
-          )}
+            )}
           </>
         ) : (
           <p>You've not added any ingredients yet.</p>
