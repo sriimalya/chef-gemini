@@ -1,10 +1,10 @@
 import ReactMarkdown from 'react-markdown'
 
 
-export default function Recipe({recipe, loading}) {
+export default function Recipe({recipeRef, recipe, loading}) {
     if (loading) {
     return (
-      <div className="recipe-box loading">
+      <div className="recipe-box loading" ref={recipeRef}>
         <h2>Generating your recipe...</h2>
         <div className="dots">
           <span></span><span></span><span></span>
@@ -14,7 +14,7 @@ export default function Recipe({recipe, loading}) {
   }
     return (
         <div className="recipe-box">
-            <h2>Generated Recipe:</h2>
+            <h2>Recipe by Chef Gemini:</h2>
             <ReactMarkdown>
             {recipe}
             </ReactMarkdown>

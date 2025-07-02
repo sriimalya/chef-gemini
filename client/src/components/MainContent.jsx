@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import IngredientList from "./IngredientList";
 import Recipe from "./Recipe";
 import { v4 as uuidv4 } from "uuid";
@@ -9,6 +9,8 @@ export default function Main() {
 
   const [recipe, setRecipe] = useState("");
   const [recipeStale, setRecipeStale] = useState(false);
+
+  const recipeSection = useRef(null)
 
   function handleSubmit(formData) {
     const newIngredientName = formData.get("ingredient");
@@ -42,6 +44,12 @@ export default function Main() {
       setLoading(false);
     }
   }
+
+  useEffect(()=>{  
+    if(loading && recipeSection.current){
+      recipeSection.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [loading])
 
   function removeIngredient(id) {
     const newIngredients = ingredients.filter(
@@ -82,7 +90,7 @@ export default function Main() {
       )}
 
       {recipe.length > 0 || loading ? (
-        <Recipe recipe={recipe} loading={loading} />
+        <Recipe recipeRef={recipeSection} recipe={recipe} loading={loading} />
       ) : null}
     </main>
   );

@@ -8,7 +8,6 @@ export default function IngredientList({ ingredients, getRecipe, removeIngredien
         <button className='remove-icon' onClick={()=>removeIngredient(ingredient.id)}><Trash2 size={20} /></button>
       </div>
     </li>
-
   ));
 
   return (
