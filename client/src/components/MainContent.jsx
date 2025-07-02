@@ -36,9 +36,12 @@ export default function Main() {
         body: JSON.stringify({ ingredients: ingredients.map((i) => i.name) }),
       });
       const data = await res.json();
-      setRecipe(data.recipe || "No recipe returned.");
+      if(res.status === 500 || data.error?.code === 500){
+        setRecipe("Chef Gemini is currently handling too many requests. Please try again shortly.")
+      } else{
+        setRecipe(data.recipe || "No recipe returned.");
+      }
     } catch (err) {
-      console.error("Fetch error:", err);
       setRecipe("Failed to load recipe.");
     } finally {
       setLoading(false);
