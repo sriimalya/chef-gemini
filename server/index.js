@@ -1,10 +1,10 @@
-import express from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv'
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 
 import { GoogleGenAI } from "@google/genai";
 
-const app = express()
+const app = express();
 app.use(cors());
 app.use(express.json());
 
@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-app.post('/get-recipe', async (req, res) => {
+app.post("/get-recipe", async (req, res) => {
   try {
     const { ingredients } = req.body;
     if (
@@ -42,13 +42,23 @@ REQUIREMENTS:
 
 Make the recipe authentic yet accessible for home cooking.`;
 
-    const response = await ai.models.generateContent({
+    res.set({
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "no-cache",
+    });
+    res.flushHeaders();
+
+    const response = await ai.models.generateContentStream({
       model: "gemini-2.5-flash-lite-preview-06-17",
       contents: prompt,
     });
 
-    const text = response.text;
-    res.json({ recipe: text });
+    for await (const chunk of response) {
+      if (chunk.text) {
+        res.write(chunk.text);
+      }
+    }
+    res.end();
   } catch (error) {
     console.error("Gemini API error:", error.message || error);
     res.status(500).json({ error: "Failed to fetch recipe." });

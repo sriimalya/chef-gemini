@@ -10,7 +10,7 @@ export default function Main() {
   const [recipe, setRecipe] = useState("");
   const [recipeStale, setRecipeStale] = useState(false);
 
-  const recipeSection = useRef(null)
+  const recipeSection = useRef(null);
 
   function handleSubmit(formData) {
     const newIngredientName = formData.get("ingredient");
@@ -27,32 +27,46 @@ export default function Main() {
   async function getRecipe() {
     setRecipeStale(false);
     setLoading(true);
+    setRecipe("");
+    
+    requestAnimationFrame(() => {
+      if (recipeSection.current) {
+        recipeSection.current.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+
     try {
-      const res = await fetch("https://chef-gemini.onrender.com/get-recipe", {
+      const res = await fetch("http://localhost:5000/get-recipe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ ingredients: ingredients.map((i) => i.name) }),
       });
-      const data = await res.json();
-      if(res.status === 500 || data.error?.code === 500){
-        setRecipe("Chef Gemini is currently handling too many requests. Please try again shortly.")
-      } else{
-        setRecipe(data.recipe || "No recipe returned.");
+
+      const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        for(const char of value){
+          setRecipe((prev) => prev + char);
+          await new Promise(requestAnimationFrame);
+        }
+      }
+
+      if (res.status === 500) {
+        setRecipe(
+          "Chef Gemini is currently handling too many requests. Please try again shortly."
+        );
       }
     } catch (err) {
+      console.log(err);
       setRecipe("Failed to load recipe.");
     } finally {
       setLoading(false);
     }
   }
-
-  useEffect(()=>{  
-    if(loading && recipeSection.current){
-      recipeSection.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [loading])
 
   function removeIngredient(id) {
     const newIngredients = ingredients.filter(
@@ -92,9 +106,7 @@ export default function Main() {
         </div>
       )}
 
-      {recipe.length > 0 || loading ? (
-        <Recipe recipeRef={recipeSection} recipe={recipe} loading={loading} />
-      ) : null}
+      <Recipe recipeRef={recipeSection} recipe={recipe} loading={loading} />
     </main>
   );
 }
