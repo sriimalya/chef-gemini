@@ -84,7 +84,7 @@ main {
 .ingredient-list-section {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
 }
 
 .ingredient-list-section .not-enough-ingredient {
@@ -103,43 +103,57 @@ main {
   color: #5f6368;
 }
 
-
 .ingredient-list {
-  list-style: disc;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding-left: 20px;
-  margin: 0;
+  background-color: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 32px;
 }
 
-.ingredient-list li {
+.ingredient-list ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.ingredient-list ul li {
+  background-color: #edf1f9;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
   font-size: 1rem;
   color: #3c4043;
+  list-style: none;
 }
 
 .list-content {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: 70%;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px;
 }
 
 .ingredient-name {
-  width: 75%;
   overflow-wrap: break-word;
+  padding: 2px;
 }
 
 .remove-icon {
+  all: unset;
+  display: flex;
+  align-items: center;
   background: none;
+  width: 20px;
   color: #5f6368;
   border: 0;
   margin: 0;
-  padding: 2px 4px;
+  padding: 0;
+  cursor: pointer;
   transition: color 0.2s ease;
-
 }
 
 .remove-icon svg:active {
@@ -154,7 +168,7 @@ main {
   border-radius: 8px;
   background: #f1f3f4;
   padding: 16px 24px;
-  margin-top: 40px;
+  margin-bottom: 32px;
 }
 
 .get-recipe h3 {
@@ -214,7 +228,6 @@ main {
   border: 1px solid #dadce0;
   border-radius: 8px;
   padding: 24px;
-  margin-top: 32px;
   color: #202124;
   font-size: 1rem;
   line-height: 1.6;
@@ -399,8 +412,40 @@ main {
     font-size: 1.2rem;
   }
 
+  .ingredient-list {
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .ingredient-list ul {
+    gap: 6px;
+  }
+
+  .ingredient-list ul li {
+    font-size: 0.85rem;
+  }
+
   .list-content {
-    width: 100%;
+    gap: 2px;
+    padding: 3px;
+  }
+
+  .ingredient-name {
+    overflow-wrap: break-word;
+    padding: 2px;
+  }
+
+  .remove-icon {
+    all: unset;
+    display: flex;
+    align-items: center;
+    background: none;
+    width: 18px;
+    color: #5f6368;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    transition: color 0.2s ease;
   }
 
   .recipe-box h2 {
