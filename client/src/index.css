@@ -168,7 +168,6 @@ main {
   border-radius: 8px;
   background: #f1f3f4;
   padding: 16px 24px;
-  margin-bottom: 32px;
 }
 
 .get-recipe h3 {
@@ -211,13 +210,15 @@ main {
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 0.8rem;
-  margin-top: 8px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
 }
 
 .warning-icon {
+  all: unset;
+  display: flex;
+  align-items: center;
   font-size: 1.5rem;
   line-height: 1;
   display: inline-block;
@@ -227,6 +228,7 @@ main {
   background-color: #ffffff;
   border: 1px solid #dadce0;
   border-radius: 8px;
+  margin-bottom: 32px;
   padding: 24px;
   color: #202124;
   font-size: 1rem;
@@ -390,6 +392,7 @@ main {
 
   .search-section {
     gap: 8px;
+    margin-bottom: 28px;
   }
 
   .search-section>input {
@@ -406,6 +409,10 @@ main {
 
   .ingredient-list-section .not-enough-ingredient {
     font-size: 0.8rem;
+  }
+
+  .ingredient-list{
+    margin-bottom: 20px;
   }
 
   .ingredient-list-section h1 {
@@ -446,6 +453,19 @@ main {
     margin: 0;
     padding: 0;
     transition: color 0.2s ease;
+  }
+
+  .warning {
+    font-size: 0.75rem;
+    gap: 4px;
+  }
+
+  .warning-icon {
+    font-size: 1rem;
+  }
+
+  .recipe-box{
+    margin-top: 20px;
   }
 
   .recipe-box h2 {
