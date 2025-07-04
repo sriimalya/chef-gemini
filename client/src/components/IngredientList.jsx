@@ -28,7 +28,7 @@ export default function IngredientList({ ingredients, getRecipe, removeIngredien
           <p>You've not added any ingredients yet.</p>
         )}
       </div>
-      {ingredients.length > 2 && (
+      {
         <div className="get-recipe">
           <div>
             <h3>Ready for a recipe?</h3>
@@ -36,7 +36,7 @@ export default function IngredientList({ ingredients, getRecipe, removeIngredien
           </div>
           <button onClick={getRecipe}>Get a recipe</button>
         </div>
-      )}
+      }
     </>
   );
 }
