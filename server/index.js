@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import "./config/db.js";
+
+import Recipe from "./models/Recipe.js";
 
 import { GoogleGenAI } from "@google/genai";
 
@@ -53,12 +56,22 @@ Make the recipe authentic yet accessible for home cooking.`;
       contents: prompt,
     });
 
+    let fullRecipeText = "";
+
     for await (const chunk of response) {
       if (chunk.text) {
         res.write(chunk.text);
+        fullRecipeText += chunk.text;
       }
     }
     res.end();
+
+    await Recipe.create({
+      content: fullRecipeText,
+      createdBy: null,
+    });
+
+    console.log("Recipe saved to DB");
   } catch (error) {
     console.error("Gemini API error:", error.message || error);
     res.status(500).json({ error: "Failed to fetch recipe." });
