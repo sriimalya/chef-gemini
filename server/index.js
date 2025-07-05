@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import "./config/db.js";
 
+import authRoutes from './routes/auth.js'
+
 import Recipe from "./models/Recipe.js";
 
 import { GoogleGenAI } from "@google/genai";
@@ -78,4 +80,5 @@ Make the recipe authentic yet accessible for home cooking.`;
   }
 });
 
+app.use('/auth', authRoutes);
 app.listen(PORT);
