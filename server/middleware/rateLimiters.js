@@ -11,7 +11,7 @@ export const recipeRateLimiter = rateLimit({
 
 export const authLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, 
-  max: 5,
+  max: 10,
   message: 'Too many login/signup attempts. Try again later.',
   standardHeaders: true,
   legacyHeaders: false,

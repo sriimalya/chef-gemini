@@ -1,9 +1,13 @@
 import { useState, useEffect, useRef } from "react";
+import { getAccessToken } from "../auth/tokenStore";
+import useAuth from "../auth/useAuth";
+
 import IngredientList from "./IngredientList";
 import Recipe from "./Recipe";
 import { v4 as uuidv4 } from "uuid";
 
 export default function Main() {
+  const { user } = useAuth();
   const [ingredients, setIngredients] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -25,10 +29,15 @@ export default function Main() {
   }
 
   async function getRecipe() {
+    if (!user) {
+      alert("You must be logged in to generate recipes.");
+      return;
+    }
+
     setRecipeStale(false);
     setLoading(true);
     setRecipe("");
-    
+
     requestAnimationFrame(() => {
       if (recipeSection.current) {
         recipeSection.current.scrollIntoView({ behavior: "smooth" });
@@ -36,20 +45,36 @@ export default function Main() {
     });
 
     try {
-      const res = await fetch("https://chef-gemini.onrender.com/get-recipe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ingredients: ingredients.map((i) => i.name) }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_LOCAL}/get-recipe`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getAccessToken()}`,
+          },
+          body: JSON.stringify({ ingredients: ingredients.map((i) => i.name) }),
+        }
+      );
+
+      if (res.status === 401) {
+        setRecipe("Session expired. Please log in again.");
+        setLoading(false);
+        return;
+      }
+
+      if (res.status === 429) {
+        setRecipe("You've hit the limit. Please try again after some time.");
+        setLoading(false);
+        return;
+      }
 
       const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        for(const char of value){
+        for (const char of value) {
           setRecipe((prev) => prev + char);
           await new Promise(requestAnimationFrame);
         }
