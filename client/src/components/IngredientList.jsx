@@ -18,11 +18,6 @@ export default function IngredientList({ ingredients, getRecipe, removeIngredien
         {ingredients.length > 0 ? (
           <div className='ingredient-list'>
             <ul>{ingredientListItems}</ul>
-            {ingredients.length < 3 && (
-              <p className="not-enough-ingredient">
-                *add at least 3 ingredients to generate a recipe.
-              </p>
-            )}
           </div>
         ) : (
           <p>You've not added any ingredients yet.</p>
