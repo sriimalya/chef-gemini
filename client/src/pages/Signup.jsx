@@ -42,7 +42,7 @@ export default function Signup() {
 
   return (
     <main>
-      <form action={handleSignup} className="form-container">
+      <form action={submitAction} className="form-container">
         <h2>Create Account</h2>
         <label htmlFor="username">Username:</label>
         <input
@@ -72,7 +72,7 @@ export default function Signup() {
           required
         />
         <button type="submit" disabled={isPending}>
-          {isPending ? "Logging in..." : "Login"}
+          {isPending ? "Signing up..." : "Signup"}
         </button>
 
         {signedUpState?.error && (
