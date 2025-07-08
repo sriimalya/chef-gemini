@@ -1,11 +1,27 @@
-import { X } from 'lucide-react';
+import { X } from "lucide-react";
 
-export default function IngredientList({ ingredients, getRecipe, removeIngredient }) {
+export default function IngredientList({
+  ingredients,
+  getRecipe,
+  removeIngredient,
+  loading,
+  isGenerating,
+  stopGeneration,
+}) {
   const ingredientListItems = ingredients.map((ingredient) => (
     <li key={ingredient.id}>
-      <div className='list-content'>
-        <span className='ingredient-name'>{ingredient.name}</span>  
-        <button className='remove-icon' onClick={()=>removeIngredient(ingredient.id)}><X/></button>
+      <div className="list-content">
+        <span className="ingredient-name">{ingredient.name}</span>
+        {loading ? (
+          ""
+        ) : (
+          <button
+            className="remove-icon"
+            onClick={() => removeIngredient(ingredient.id)}
+          >
+            <X />
+          </button>
+        )}
       </div>
     </li>
   ));
@@ -16,7 +32,7 @@ export default function IngredientList({ ingredients, getRecipe, removeIngredien
         <h1>Ingredients on Hand:</h1>
 
         {ingredients.length > 0 ? (
-          <div className='ingredient-list'>
+          <div className="ingredient-list">
             <ul>{ingredientListItems}</ul>
           </div>
         ) : (
@@ -25,11 +41,11 @@ export default function IngredientList({ ingredients, getRecipe, removeIngredien
       </div>
       {
         <div className="get-recipe">
-          <div>
-            <h3>Ready for a recipe?</h3>
-            <p>Generate a recipe from your list of ingredients.</p>
-          </div>
-          <button onClick={getRecipe}>Get a recipe</button>
+          {isGenerating ? (
+            <button onClick={stopGeneration}>Stop</button>
+          ) : (
+            <button onClick={getRecipe}>Get a recipe</button>
+          )}
         </div>
       }
     </>

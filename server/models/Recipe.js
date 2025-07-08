@@ -7,7 +7,7 @@ const recipeSchema = new mongoose.Schema({
     ref: "User",
     default: null,
   },
-  createdAt: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: () => new Date().toLocaleString(), },
 });
 
 export default mongoose.model("Recipe", recipeSchema);
