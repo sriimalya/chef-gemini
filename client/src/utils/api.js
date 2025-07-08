@@ -1,11 +1,11 @@
-import axios from 'axios';
-import { getAccessToken, setAccessToken } from '../auth/tokenStore';
+import axios from "axios";
+import { getAccessToken, setAccessToken } from "../auth/tokenStore";
 
 let isRefreshing = false;
 let refreshAndRetryQueue = [];
 
 function processQueue(error, token = null) {
-  refreshAndRetryQueue.forEach(prom => {
+  refreshAndRetryQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
     } else {
@@ -16,11 +16,12 @@ function processQueue(error, token = null) {
 }
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_LOCAL || 'https://chef-gemini.onrender.com',
+  baseURL:
+    import.meta.env.VITE_API_BASE_LOCAL || "https://chef-gemini.onrender.com",
   withCredentials: true,
 });
 
-api.interceptors.request.use(config => {
+api.interceptors.request.use((config) => {
   const token = getAccessToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -29,13 +30,17 @@ api.interceptors.request.use(config => {
 });
 
 api.interceptors.response.use(
-  res => res,
+  (res) => res,
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      originalRequest.url !== "/auth/refresh-token"
+    ) {
       if (isRefreshing) {
-        // Wait for token refresh to complete and retry the request
+        // wait for token refresh to complete and retry the request
         return new Promise((resolve, reject) => {
           refreshAndRetryQueue.push({ resolve, reject });
         }).then((token) => {
@@ -48,7 +53,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await api.post('/auth/refresh-token');
+        const res = await api.post("/auth/refresh-token");
         const newToken = res.data.token;
         setAccessToken(newToken);
         processQueue(null, newToken);

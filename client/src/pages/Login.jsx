@@ -1,12 +1,16 @@
 import useAuth from "../auth/useAuth";
 import { useNavigate } from "react-router-dom";
-import { useActionState } from "react";
+import { useEffect, useActionState } from "react";
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, user, loading } = useAuth();
   const navigate = useNavigate();
 
-  const [user, submitAction, isPending] = useActionState(handleLogin, {
+  if( !loading && user){
+    navigate("/");
+  }
+
+  const [loginState, submitAction, isPending] = useActionState(handleLogin, {
     data: null,
     error: null,
   });
@@ -16,8 +20,8 @@ export default function Login() {
     const password = formData.get("password");
 
     try {
-      const response = await login(username, password);
-      return { data: response.data, error: null };
+      const user = await login(username, password);
+      return { data: user, error: null };
     } catch (error) {
       return { 
         ...prevState, 
@@ -27,10 +31,10 @@ export default function Login() {
   }
 
   useEffect(() => {
-    if (user?.data) {
+    if (loginState?.data) {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [loginState, navigate]);
 
   return (
     <main>
@@ -59,7 +63,8 @@ export default function Login() {
         <button type="submit" disabled={isPending} className="form-button">
           {isPending ? "Logging in..." : "Login"}
         </button>
-        {user?.error && <div className="form-error">{user.error}</div>}
+        
+        {loginState?.error && <div className="form-error">{loginState.error}</div>}
       </form>
     </main>
   );

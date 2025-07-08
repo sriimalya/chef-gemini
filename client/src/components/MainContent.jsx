@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { getAccessToken } from "../auth/tokenStore";
 import useAuth from "../auth/useAuth";
 
@@ -15,6 +15,9 @@ export default function Main() {
   const [recipeStale, setRecipeStale] = useState(false);
 
   const recipeSection = useRef(null);
+  const controllerRef = useRef(null); // tracking AbortController
+
+  const [isGenerating, setIsGenerating] = useState(false);
 
   function handleSubmit(formData) {
     const newIngredientName = formData.get("ingredient");
@@ -34,6 +37,10 @@ export default function Main() {
       return;
     }
 
+    const controller = new AbortController();
+    controllerRef.current = controller;
+
+    setIsGenerating(true);
     setRecipeStale(false);
     setLoading(true);
     setRecipe("");
@@ -46,7 +53,7 @@ export default function Main() {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_LOCAL}/get-recipe`,
+        `${import.meta.env.VITE_API_BASE}/get-recipe`,
         {
           method: "POST",
           headers: {
@@ -54,6 +61,7 @@ export default function Main() {
             Authorization: `Bearer ${getAccessToken()}`,
           },
           body: JSON.stringify({ ingredients: ingredients.map((i) => i.name) }),
+          signal: controller.signal,
         }
       );
 
@@ -71,7 +79,14 @@ export default function Main() {
 
       const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
 
-      while (true) {
+      let isAborted = false
+      controller.signal.addEventListener("abort", ()=>{
+        isAborted=true;
+        reader.cancel();
+        console.log("Generation aborted.");
+      });
+
+      while (!isAborted) {
         const { done, value } = await reader.read();
         if (done) break;
         for (const char of value) {
@@ -86,10 +101,12 @@ export default function Main() {
         );
       }
     } catch (err) {
-      console.log(err);
-      setRecipe("Failed to load recipe.");
+        console.error(err);
+        setRecipe("Failed to load recipe.");
     } finally {
       setLoading(false);
+      setIsGenerating(false);
+      controllerRef.current = null;
     }
   }
 
@@ -100,6 +117,12 @@ export default function Main() {
     setIngredients(newIngredients);
     if (newIngredients.length < 3) setRecipe("");
     setRecipeStale(true);
+  }
+
+  function stopGeneration() {
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
   }
 
   return (
@@ -118,6 +141,9 @@ export default function Main() {
         ingredients={ingredients}
         getRecipe={getRecipe}
         removeIngredient={removeIngredient}
+        loading={loading}
+        isGenerating={isGenerating}
+        stopGeneration={stopGeneration}
       />
 
       {recipe.length > 0 && recipeStale && ingredients.length >= 3 && (
@@ -131,7 +157,12 @@ export default function Main() {
         </div>
       )}
 
-      <Recipe recipeRef={recipeSection} recipe={recipe} loading={loading} />
+      <Recipe
+        recipeRef={recipeSection}
+        recipe={recipe}
+        loading={loading}
+        isGenerating={isGenerating}
+      />
     </main>
   );
 }

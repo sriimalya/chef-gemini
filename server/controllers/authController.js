@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 
 import User from "../models/User.js";
 
-//generate access token func
 const generateAccessToken = (userId)=>{
   return jwt.sign({userId}, process.env.JWT_SECRET, {expiresIn: '15m'});
 }
@@ -56,12 +55,12 @@ export const login = async (req, res) => {
 
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(401).json({ error: "Authentication failed" });
+      return res.status(401).json({ error: "Invalid credentials" });
     }
 
     const passMatch = await bcrypt.compare(password, user.password);
     if (!passMatch) {
-      return res.status(401).json({ error: "Authentication failed" });
+      return res.status(401).json({ error: "Invalid credentials" });
     }
 
     const accessToken = generateAccessToken(user._id)

@@ -1,33 +1,84 @@
-// pages/Signup.jsx
-import { useState } from 'react';
-import useAuth from '../auth/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useActionState } from "react";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../auth/useAuth";
 
 export default function Signup() {
-  const { signup } = useAuth();
-  const [form, setForm] = useState({ username: '', email: '', password: '' });
+  const { signup, user, loading } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = e => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  if (!loading && user) {
+    navigate("/");
+  }
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-    try {
-      await signup(form);
-      navigate('/');
-    } catch (err) {
-      alert(err.response?.data?.error || 'Signup failed');
+  const [signedUpState, submitAction, isPending] = useActionState(
+    handleSignup,
+    {
+      data: null,
+      error: null,
     }
-  };
+  );
+
+  async function handleSignup(prevState, formData) {
+    const username = formData.get("username");
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    try {
+      const user = await signup(username, email, password);
+      return { data: user, error: null };
+    } catch (error) {
+      return {
+        ...prevState,
+        error: error?.response?.data?.error || error.message || "Signup failed",
+      };
+    }
+  }
+
+  useEffect(() => {
+    if (signedUpState?.data) {
+      navigate("/");
+    }
+  }, [signedUpState, navigate]);
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="username" onChange={handleChange} placeholder="Username" />
-      <input name="email" onChange={handleChange} placeholder="Email" />
-      <input name="password" type="password" onChange={handleChange} placeholder="Password" />
-      <button type="submit">Signup</button>
-    </form>
+    <main>
+      <form action={handleSignup} className="form-container">
+        <h2>Create Account</h2>
+        <label htmlFor="username">Username:</label>
+        <input
+          id="username"
+          name="username"
+          type="text"
+          placeholder="Username"
+          className="form-input"
+          required
+        />
+        <label htmlFor="email">Email:</label>
+        <input
+          id="email"
+          name="email"
+          type="text"
+          placeholder="Email"
+          className="form-input"
+          required
+        />
+        <label htmlFor="password">Password:</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Password"
+          className="form-input"
+          required
+        />
+        <button type="submit" disabled={isPending}>
+          {isPending ? "Logging in..." : "Login"}
+        </button>
+
+        {signedUpState?.error && (
+          <div className="form-error">{signedUpState.error}</div>
+        )}
+      </form>
+    </main>
   );
 }
