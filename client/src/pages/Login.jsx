@@ -1,12 +1,13 @@
 import useAuth from "../auth/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useActionState } from "react";
+import { NavLink, Route } from "react-router-dom";
 
 export default function Login() {
   const { login, user, loading } = useAuth();
   const navigate = useNavigate();
 
-  if( !loading && user){
+  if (!loading && user) {
     navigate("/");
   }
 
@@ -23,9 +24,9 @@ export default function Login() {
       const user = await login(username, password);
       return { data: user, error: null };
     } catch (error) {
-      return { 
-        ...prevState, 
-        error: error?.response?.data?.error || error.message || "Login failed" 
+      return {
+        ...prevState,
+        error: error?.response?.data?.error || error.message || "Login failed",
       };
     }
   }
@@ -63,9 +64,18 @@ export default function Login() {
         <button type="submit" disabled={isPending} className="form-button">
           {isPending ? "Logging in..." : "Login"}
         </button>
-        
-        {loginState?.error && <div className="form-error">{loginState.error}</div>}
+
+        {loginState?.error && (
+          <div className="form-error">{loginState.error}</div>
+        )}
       </form>
+
+      <div>Don't have an account?</div>
+      <NavLink
+        to="/signup"
+      >
+        Signup
+      </NavLink>
     </main>
   );
 }
