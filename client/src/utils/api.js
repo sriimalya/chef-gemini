@@ -54,6 +54,11 @@ api.interceptors.response.use(
 
       try {
         const res = await api.post("/auth/refresh-token");
+        if (res.status === 204) {
+          // if no refresh token, then don't retry, return original 401 error
+          processQueue(new Error("No refresh token"), null);
+          return Promise.reject(error); // original 401
+        }
         const newToken = res.data.token;
         setAccessToken(newToken);
         processQueue(null, newToken);

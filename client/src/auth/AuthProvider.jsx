@@ -25,10 +25,17 @@ export const AuthProvider = ({ children }) => {
         try {
           // refresh token even if accessToken doesn't exist but
           // this else block was especially written to handle the case when
-          // on refresh user was redirected to login page again 
+          // on refresh user was redirected to login page again
           // there is refreshToken in the cookie but no access token is there
-         
+
           const res = await api.post("/auth/refresh-token");
+
+          // if response is 204, it means no refresh token exists 
+          if (res.status === 204) {
+            setUser(null);
+            return;
+          }
+
           setAccessToken(res.data.token);
 
           // fetch user again
@@ -48,17 +55,17 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
-      const res = await api.post("/auth/login", { username, password });
-      setAccessToken(res.data.token);
-      setUser(res.data.user);
-      return res.data.user;
+    const res = await api.post("/auth/login", { username, password });
+    setAccessToken(res.data.token);
+    setUser(res.data.user);
+    return res.data.user;
   };
 
   const signup = async ({ username, email, password }) => {
-      const res = await api.post("/auth/signup", { username, email, password });
-      setAccessToken(res.data.token);
-      setUser(res.data.user);
-      return res.data.user;
+    const res = await api.post("/auth/signup", { username, email, password });
+    setAccessToken(res.data.token);
+    setUser(res.data.user);
+    return res.data.user;
   };
 
   const logout = async () => {
