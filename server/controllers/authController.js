@@ -27,6 +27,7 @@ export const signup = async (req, res) => {
 
     const hashedPass = await bcrypt.hash(password, 10);
     const user = await User.create({ username, email, password: hashedPass });
+    console.log("[SIGNUP] New user created");
 
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
@@ -37,14 +38,14 @@ export const signup = async (req, res) => {
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
+    console.log("[SIGNUP] Access and refresh tokens issued");
     res.status(201).json({
       message: "User created successfully",
       token: accessToken,
       user: { id: user._id, username: user.username },
     });
   } catch (err) {
-    console.error(err || err.message);
+    console.error("[SIGNUP] Internal error:", err || err.message);
     res.status(500).json({ error: "Signup failed" });
   }
 };
@@ -95,27 +96,27 @@ export const logout = (req, res) => {
 
 export const refreshToken = (req, res) => {
   const token = req.cookies.refreshToken;
-  console.log("Incoming refresh request. Token:", token);
+  const origin = req.headers.origin;
+  console.log(`[REFRESH] Incoming refresh request from origin: ${origin}`);
+  console.log("Incoming refresh request. Token:");
+
   if (!token) {
     console.log("No refresh token found in cookies");
-    // res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
-    // res.setHeader("Access-Control-Allow-Credentials", "true");
     return res.status(204).end();
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    console.log(`[REFRESH] Token verified for userId: ${decoded.userId}`);
+
     const accessToken = jwt.sign(
       { userId: decoded.userId },
       process.env.JWT_SECRET,
       { expiresIn: "15m" }
     );
-    console.log("Refresh successful, new access token issued.");
-
+    console.log("[REFRESH] New access token issued");
     return res.status(200).json({ token: accessToken });
   } catch (err) {
-    console.error("Invalid refresh token", err);
-    // res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
-    // res.setHeader("Access-Control-Allow-Credentials", "true");
+    console.error("[REFRESH] Invalid refresh token:", err.message);
     return res.status(403).json({ error: "Invalid refresh token" });
   }
 };
