@@ -1,7 +1,11 @@
+import useAuth from "../auth/useAuth";
+
 import ChefIcon from '../assets/chef-icon.png'
 import {HistoryIcon, Bookmark} from 'lucide-react'
 
 function Header() {
+  const { user } = useAuth();
+  const username = user.username
   return (
     <header>
       <div className='left-item'>
@@ -11,7 +15,7 @@ function Header() {
       <div className='right-item'>
         <HistoryIcon/>
         <Bookmark/> 
-        <button className='user-icon'></button>       
+        <button className='user-icon'>{username.charAt(0).toUpperCase()}</button>       
       </div>
     </header>
   )

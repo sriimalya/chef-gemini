@@ -1,7 +1,7 @@
 import useAuth from "../auth/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useActionState } from "react";
-import { NavLink, Route } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export default function Login() {
   const { login, user, loading } = useAuth();

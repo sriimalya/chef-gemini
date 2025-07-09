@@ -14,24 +14,15 @@ const app = express();
 app.set('trust proxy', 1);
 app.use(corsMiddleware);
 
-// const corsOptions = {
-//   origin: [
-//     "http://localhost:5173",
-//     "https://chef-gemini-iota.vercel.app"
-//   ],
-//   credentials: true,
-//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//   allowedHeaders: ["Content-Type", "Authorization"],
-// };
-
-// app.use(cors(corsOptions));
-// app.options('/*splat', cors(corsOptions));
-
 app.use(express.json());
 app.use(cookieParser());
 
 
 const PORT = process.env.PORT || 5000;
+
+app.get("/ping", (req, res) => {
+  res.status(200).send("pong");
+});
 
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes)

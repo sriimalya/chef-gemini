@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let didTryRefresh = false;
     async function initializeUser() {
       const token = getAccessToken();
       if (token) {
@@ -22,6 +23,23 @@ export const AuthProvider = ({ children }) => {
           setLoading(false);
         }
       } else {
+        if (didTryRefresh) {
+          setLoading(false);
+          return;
+        }
+        didTryRefresh = true;
+        console.log("[Auth] No access token. Trying refresh...");
+
+        try {
+          const ping = await api.get("/ping");
+          console.log("[Auth] Ping response:", ping.data);
+        } catch (pingErr) {
+          console.warn(
+            "[Auth] Ping failed (server might be cold):",
+            pingErr.message
+          );
+        }
+
         try {
           // refresh token even if accessToken doesn't exist but
           // this else block was especially written to handle the case when
@@ -30,8 +48,9 @@ export const AuthProvider = ({ children }) => {
 
           const res = await api.post("/auth/refresh-token");
 
-          // if response is 204, it means no refresh token exists 
+          // if response is 204, it means no refresh token exists
           if (res.status === 204) {
+            console.warn("[Auth] No refresh token found (204)");
             setUser(null);
             return;
           }
@@ -41,6 +60,7 @@ export const AuthProvider = ({ children }) => {
           // fetch user again
           const userRes = await api.get("/user/me");
           setUser(userRes.data.user);
+          console.log("[Auth] Auto-login successful.");
         } catch (err) {
           console.log("Auto-login failed:", err.message);
           clearAccessToken();
@@ -61,7 +81,7 @@ export const AuthProvider = ({ children }) => {
     return res.data.user;
   };
 
-  const signup = async ( username, email, password ) => {
+  const signup = async (username, email, password) => {
     const res = await api.post("/auth/signup", { username, email, password });
     setAccessToken(res.data.token);
     setUser(res.data.user);
