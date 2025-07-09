@@ -10,15 +10,15 @@ function processQueue(error, token = null) {
       console.warn("[API] Processing queue with error:", error.message);
       prom.reject(error);
     } else {
-        console.log("[API] Processing queue with new access token");
-        prom.resolve(token);
+      console.log("[API] Processing queue with new access token");
+      prom.resolve(token);
     }
   });
   refreshAndRetryQueue = [];
 }
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE, 
+  baseURL: import.meta.env.VITE_API_BASE,
   withCredentials: true,
 });
 
@@ -28,7 +28,7 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
     console.log(`[API] Request with token to ${config.url}`);
-  } else{
+  } else {
     console.log(`[API] Request without token to ${config.url}`);
   }
   return config;
@@ -78,8 +78,13 @@ api.interceptors.response.use(
         console.log("[API] Retrying original request after refresh...");
         return api(originalRequest);
       } catch (err) {
-        console.error("[API] Refresh token request failed:", err.message);
-        processQueue(err, null);
+        if (err.response?.status === 502) {
+          console.warn("[API] Server is waking up (502), treating as no token");
+          processQueue(new Error("Server asleep"), null);
+        } else {
+          console.error("[API] Refresh token failed:", err.message);
+          processQueue(err, null);
+        }
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
