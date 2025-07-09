@@ -41,4 +41,11 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes)
 app.use('/', recipeRoute);
 
+app._router.stack.forEach((r) => {
+  if (r.route && r.route.path) {
+    console.log(`Route: ${r.route.path}`);
+  }
+});
+
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
