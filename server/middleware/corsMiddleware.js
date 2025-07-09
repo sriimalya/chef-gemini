@@ -8,7 +8,8 @@ export const corsMiddleware = (req, res, next) => {
  if (origin === allowedOrigin) {
  res.header("Access-Control-Allow-Origin", origin);
  } else {
- console.log(`Origin mismatch: ${origin} vs ${allowedOrigin}`);
+    res.setHeader("Access-Control-Allow-Origin", "null");
+    console.log(`Origin mismatch: ${origin} vs ${allowedOrigin}`);
  }
 
 // 2. Credentials Not Allowed
