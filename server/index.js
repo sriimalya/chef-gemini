@@ -16,20 +16,14 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://chef-gemini-iota.vercel.app"
 ];
+
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: allowedOrigins,
   credentials: true,
 };
 
 app.use(cors(corsOptions));
-app.options(/.*/, cors(corsOptions));
+
 app.use(express.json());
 app.use(cookieParser());
 
