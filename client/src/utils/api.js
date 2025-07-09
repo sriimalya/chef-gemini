@@ -16,8 +16,7 @@ function processQueue(error, token = null) {
 }
 
 const api = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_BASE_LOCAL || "https://chef-gemini.onrender.com",
+  baseURL: import.meta.env.VITE_API_BASE, 
   withCredentials: true,
 });
 
