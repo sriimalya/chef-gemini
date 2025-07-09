@@ -5,6 +5,6 @@ import { recipeRateLimiter } from '../middleware/rateLimiters.js';
 
 const router = express.Router();
 
-router.post("/get-recipe", verifyToken, recipeRateLimiter, getRecipe)
+router.post("/", verifyToken, recipeRateLimiter, getRecipe)
 
 export default router;
