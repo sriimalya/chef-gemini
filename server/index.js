@@ -1,5 +1,5 @@
 import express from "express";
-import { corsMiddleware } from './corsMiddleware';
+import { corsMiddleware } from './middleware/corsMiddleware.js';
 import dotenv from "dotenv";
 import cookieParser from 'cookie-parser'
 
