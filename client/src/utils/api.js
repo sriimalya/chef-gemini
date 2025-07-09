@@ -78,7 +78,12 @@ api.interceptors.response.use(
         console.log("[API] Retrying original request after refresh...");
         return api(originalRequest);
       } catch (err) {
-        if (err.response?.status === 502) {
+        if (err.message === "Network Error" && !err.response) {
+          console.warn(
+            "[API] Network error — likely cold start or CORS failure"
+          );
+          processQueue(new Error("Server unreachable or asleep"), null);
+        } else if (err.response?.status === 502) {
           console.warn("[API] Server is waking up (502), treating as no token");
           processQueue(new Error("Server asleep"), null);
         } else {

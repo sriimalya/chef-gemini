@@ -74,6 +74,7 @@ export const login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
+    console.log("[LOGIN] Access and refresh tokens issued")
     res.status(200).json({
       message: "Login successful",
       token: accessToken,
