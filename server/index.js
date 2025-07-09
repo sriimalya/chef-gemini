@@ -12,11 +12,10 @@ import recipeRoute from './routes/recipe.js'
 dotenv.config();
 const app = express();
 
-app.use(cors({
-    origin: ['http://localhost:5173', 'https://chef-gemini-iota.vercel.app'],
-    credentials: true
-}));
-
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://chef-gemini-iota.vercel.app"
+];
 app.options("*", cors({
   origin: allowedOrigins,
   credentials: true,
