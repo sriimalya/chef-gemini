@@ -98,8 +98,8 @@ export const refreshToken = (req, res) => {
   console.log("Incoming refresh request. Token:", token);
   if (!token) {
     console.log("No refresh token found in cookies");
-    res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
-    res.setHeader("Access-Control-Allow-Credentials", "true");
+    // res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
+    // res.setHeader("Access-Control-Allow-Credentials", "true");
     return res.status(204).end();
   }
   try {
@@ -114,8 +114,8 @@ export const refreshToken = (req, res) => {
     return res.status(200).json({ token: accessToken });
   } catch (err) {
     console.error("Invalid refresh token", err);
-    res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
-    res.setHeader("Access-Control-Allow-Credentials", "true");
+    // res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
+    // res.setHeader("Access-Control-Allow-Credentials", "true");
     return res.status(403).json({ error: "Invalid refresh token" });
   }
 };
