@@ -1,4 +1,3 @@
-# Simulated request to your render project so that the service doesn't go down
 name: Daily render ping
 
 on:
@@ -7,9 +6,12 @@ on:
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
-  curl-website:
+  ping-render:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run cURL on Website
-        run: curl -I https://chef-gemini.onrender.com
+      - name: Ping backend with GET request
+        run: |
+          curl -X GET https://chef-gemini.onrender.com/ping \
+            -H "User-Agent: keep-alive-bot" \
+            -H "Accept: application/json"
