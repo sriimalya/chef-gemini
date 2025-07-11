@@ -31,8 +31,10 @@ export const AuthProvider = ({ children }) => {
         console.log("[Auth] No access token. Trying refresh...");
 
         try {
-          const ping = await api.get("/ping");
-          console.log("[Auth] Ping response:", ping.data);
+          const pingRes = await fetch(`${import.meta.env.VITE_API_BASE}/ping`);
+          const pingText = await pingRes.text();
+          console.log("[Auth] Ping response:", pingText);
+          await new Promise((r) => setTimeout(r, 300));
         } catch (pingErr) {
           console.warn(
             "[Auth] Ping failed (server might be cold):",
