@@ -28,8 +28,6 @@ export const AuthProvider = ({ children }) => {
           return;
         }
         didTryRefresh = true;
-        console.log("[Auth] No access token. Trying refresh...");
-
         try {
           const pingRes = await fetch(`${import.meta.env.VITE_API_BASE}/ping`);
           const pingText = await pingRes.text();
@@ -48,6 +46,7 @@ export const AuthProvider = ({ children }) => {
           // on refresh user was redirected to login page again
           // there is refreshToken in the cookie but no access token is there
 
+          console.log("[Auth] No access token. Trying refresh...");
           const res = await api.post("/auth/refresh-token");
 
           // if response is 204, it means no refresh token exists
