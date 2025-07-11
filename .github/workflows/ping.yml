@@ -1,0 +1,17 @@
+name: Daily render ping
+
+on:
+  schedule:
+    - cron: '*/20 * * * *'  # Every 20 minutes
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  ping-render:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping backend with GET request
+        run: |
+          curl -X GET https://chef-gemini.onrender.com/ping \
+            -H "User-Agent: keep-alive-bot" \
+            -H "Accept: application/json"
