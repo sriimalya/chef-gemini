@@ -1,10 +1,10 @@
-import { X } from "lucide-react";
+import { X, PlusIcon, CircleStop } from "lucide-react";
 
 export default function IngredientList({
   ingredients,
+  handleSubmit,
   getRecipe,
   removeIngredient,
-  loading,
   isGenerating,
   stopGeneration,
 }) {
@@ -12,7 +12,7 @@ export default function IngredientList({
     <li key={ingredient.id}>
       <div className="list-content">
         <span className="ingredient-name">{ingredient.name}</span>
-        {loading ? (
+        {isGenerating ? (
           ""
         ) : (
           <button
@@ -28,26 +28,69 @@ export default function IngredientList({
 
   return (
     <>
-      <div className="ingredient-list-section">
-        <h1>Ingredients on Hand:</h1>
+      {/* form - (header, form-input, ingredient-list, warning, get-recipe button/stop button) */}
 
-        {ingredients.length > 0 ? (
-          <div className="ingredient-list">
-            <ul>{ingredientListItems}</ul>
+      <div className="ingredient-container">
+        {/* header */}
+        <div className="ingredient-header">
+          <span className="plus-icon">
+            <PlusIcon />
+          </span>
+          <div className="form-headings">
+            <h2>Add Your Ingredients</h2>
+            <p>Your ingredients, our recipes.</p>
           </div>
-        ) : (
-          <p>You've not added any ingredients yet.</p>
-        )}
-      </div>
-      {
-        <div className="get-recipe">
-          {isGenerating ? (
-            <button onClick={stopGeneration}>Stop</button>
-          ) : (
-            <button onClick={getRecipe}>Get a recipe</button>
-          )}
         </div>
-      }
+
+        <div className="ingredient-form">
+          {/* form-input */}
+          <form action={handleSubmit} className="input-section">
+            <input
+              type="text"
+              placeholder="Type an ingredient (e.g., rice)"
+              aria-label="Add Ingredient"
+              name="ingredient"
+            />
+            <button type="submit" className="add-button">
+              <span class="text">Add</span>
+              <span class="icon">
+                <PlusIcon size={20} />
+              </span>
+            </button>
+          </form>
+
+          <div className="ingredient-list-section">
+            {/* ingredient-list */}
+            {ingredients.length > 0 && (
+              <div className="ingredient-list">
+                <ul>{ingredientListItems}</ul>
+              </div>
+            )}
+
+            {/* warning */}
+            {ingredients.length > 0 && ingredients.length < 2 && (
+              <div className="warning">⚠️ min. 2 ingredients required.</div>
+            )}
+          </div>
+
+          {/* get-recipe/stop-recipe button */}
+          <div>
+            {isGenerating ? (
+              <button onClick={stopGeneration} className="stop-btn">
+                <span className="stop-icon"><CircleStop/></span>
+                Stop generating recipe</button>
+            ) : (
+              <button
+                onClick={ingredients.length >= 2 ? getRecipe : undefined}
+                className="get-recipe"
+                disabled={ingredients.length < 2}
+              >
+                Get a recipe with Chef Gemini
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
     </>
   );
 }

@@ -1,10 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
+import { v4 as uuidv4 } from "uuid";
+
 import { getAccessToken } from "../auth/tokenStore";
 import useAuth from "../auth/useAuth";
 
 import IngredientList from "./IngredientList";
 import Recipe from "./Recipe";
-import { v4 as uuidv4 } from "uuid";
 
 export default function Main() {
   const { user } = useAuth();
@@ -18,6 +19,8 @@ export default function Main() {
   const controllerRef = useRef(null); // tracking AbortController
 
   const [isGenerating, setIsGenerating] = useState(false);
+
+  const [isPending, startTransition] = useTransition();
 
   function handleSubmit(formData) {
     const newIngredientName = formData.get("ingredient");
@@ -79,9 +82,9 @@ export default function Main() {
 
       const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
 
-      let isAborted = false
-      controller.signal.addEventListener("abort", ()=>{
-        isAborted=true;
+      let isAborted = false;
+      controller.signal.addEventListener("abort", () => {
+        isAborted = true;
         reader.cancel();
         console.log("Generation aborted.");
       });
@@ -90,7 +93,9 @@ export default function Main() {
         const { done, value } = await reader.read();
         if (done) break;
         for (const char of value) {
-          setRecipe((prev) => prev + char);
+          startTransition(() => {
+            setRecipe((prev) => prev + char);
+          });
           await new Promise(requestAnimationFrame);
         }
       }
@@ -101,8 +106,8 @@ export default function Main() {
         );
       }
     } catch (err) {
-        console.error(err);
-        setRecipe("Failed to load recipe.");
+      console.error(err);
+      setRecipe("Failed to load recipe.");
     } finally {
       setLoading(false);
       setIsGenerating(false);
@@ -127,35 +132,15 @@ export default function Main() {
 
   return (
     <main>
-      <form className="search-section" action={handleSubmit}>
-        <input
-          type="text"
-          placeholder="e.g. oregano"
-          aria-label="Add Ingredient"
-          name="ingredient"
-        />
-        <button type="submit">+ Add Ingredient</button>
-      </form>
-
       <IngredientList
         ingredients={ingredients}
+        handleSubmit={handleSubmit}
         getRecipe={getRecipe}
         removeIngredient={removeIngredient}
         loading={loading}
         isGenerating={isGenerating}
         stopGeneration={stopGeneration}
       />
-
-      {recipe.length > 0 && recipeStale && ingredients.length >= 3 && (
-        <div className="warning">
-          <span className="warning-icon">⚠️</span>
-          <div className="warning-text">
-            <strong>Ingredient list changed.</strong>
-            <br />
-            Please regenerate the recipe to reflect the updated list.
-          </div>
-        </div>
-      )}
 
       <Recipe
         recipeRef={recipeSection}

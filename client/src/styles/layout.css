@@ -1,31 +1,19 @@
 header {
   display: flex;
-  height: 70px;
   justify-content: space-between;
   align-items: center;
   gap: 11px;
-  padding: 6px 32px;
+  padding: 20px 32px;
   background-color: #ffffff;
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08);
 }
 
-header > img {
-  width: 40px;
-}
-
-header > p {
-  font-size: 28px;
-  font-weight: 400;
-  color: #202124;
-}
-
-.left-item{
+.left-item {
   display: flex;
   gap: 4px;
   align-items: center;
   justify-content: center;
 }
-
 
 .left-item img {
   width: 30px;
@@ -37,15 +25,19 @@ header > p {
   color: #202124;
 }
 
-.right-item{
+.right-item {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
 }
 
-.user-icon{
-  all:unset;
+.right-item .icon {
+  color: #484a55;
+}
+
+.user-icon {
+  all: unset;
   width: 24px;
   height: 24px;
   display: flex;
@@ -60,6 +52,42 @@ header > p {
 
 main {
   padding: 40px 30px;
-  max-width: 700px;
+  max-width: 800px;
   margin: 0 auto;
+}
+
+
+@media (max-width: 480px) {
+  header {
+    padding: 14px 26px;
+  }
+
+  .left-item img {
+    width: 22px;
+  }
+
+  .left-item p {
+    font-size: 18px;
+    font-weight: 500;
+    color: #202124;
+  }
+
+  .right-item {
+    gap: 6px;
+  }
+
+  .right-item .icon {
+    width: 22px;
+  }
+
+  .user-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  main {
+    padding: 32px 24px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
 }

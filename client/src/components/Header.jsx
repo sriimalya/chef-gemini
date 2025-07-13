@@ -13,8 +13,8 @@ function Header() {
         <p>Chef Gemini</p>
       </div>
       <div className='right-item'>
-        <HistoryIcon/>
-        <Bookmark/> 
+        <HistoryIcon className="icon"/>
+        <Bookmark className="icon"/> 
         <button className='user-icon'>{username.charAt(0).toUpperCase()}</button>       
       </div>
     </header>

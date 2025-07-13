@@ -23,29 +23,51 @@
 }
 
 @media (max-width: 480px) {
-  .search-section {
-    gap: 8px;
-    margin-bottom: 28px;
+  .ingredient-container {
+    padding: 18px;
+    gap: 22px;
   }
 
-  .search-section > input {
+  .ingredient-header {
+    gap: 8px;
+  }
+
+  .form-headings h2 {
+    font-size: 0.94rem;
+  }
+
+  .form-headings p {
+    font-size: 0.72rem;
+  }
+
+  .ingredient-form {
+    gap: 18px;
+  }
+
+  .input-section {
+    gap: 8px;
+  }
+
+  .input-section>input {
     width: 65%;
     padding: 12px 14px;
     font-size: 0.9rem;
   }
 
-  .search-section > button {
-    width: 30%;
-    padding: 8px 10px;
-    font-size: 0.75rem;
+  .input-section .add-button {
+    width: 20%;
+    padding: 10px 6px;
   }
 
-  .ingredient-list-section .not-enough-ingredient {
-    font-size: 0.8rem;
+  .add-button .text {
+    display: none;
+  }
+
+  .add-button .icon {
+    display: inline-block;
   }
 
   .ingredient-list {
-    margin-bottom: 20px;
     border-radius: 8px;
     padding: 16px;
   }
@@ -64,24 +86,33 @@
 
   .list-content {
     gap: 2px;
-    padding: 3px;
+    padding: 4px 8px;
   }
 
   .ingredient-name {
+    font-size: 0.8rem;
     padding: 2px;
   }
 
   .remove-icon {
-    width: 18px;
+    width: 14px;
   }
 
   .warning {
-    font-size: 0.75rem;
-    gap: 4px;
+    font-size: 0.7rem;
   }
 
-  .warning-icon {
-    font-size: 1rem;
+  .get-recipe {
+    padding: 16px 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .stop-btn{
+    font-size: 0.9rem;
+  }
+  .stop-icon{
+    width: 20px;
   }
 
   .recipe-box {

@@ -1,27 +1,60 @@
-.ingredient-list-section {
+.ingredient-container {
+  background-color: #ffffff;
+  padding: 24px;
+  border: 1px solid;
+  border-radius: 12px;
+  border-color: #e5e7eb;
   display: flex;
   flex-direction: column;
+  gap: 30px;
+}
+
+.ingredient-header {
+  display: flex;
+  flex-direction: row;
   gap: 12px;
 }
 
-.ingredient-list-section .not-enough-ingredient {
-  font-size: 0.9rem;
-  color: #d93025;
+.ingredient-header .plus-icon {
+  color:#4285f4;
+  width: 40px;
+  height: 40px;
+  background-color: #dbeafe;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 25%;
 }
 
-.ingredient-list-section h1 {
-  font-size: 1.5rem;
-  color: #202124;
+.form-headings {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 
-.ingredient-list-section > p {
-  color: #5f6368;
+.form-headings h2 {
+  font-weight: bold;
+  font-size: 1.15rem;
+  padding: 0;
+  border: none;
+}
+
+.form-headings p{
+  font-weight: 100;
+  font-size: 0.82rem;
+  color: #4b5563;
+}
+
+.ingredient-list-section{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .ingredient-list {
-  background-color: #ffffff;
-  border: 1px solid #dadce0;
-  border-radius: 8px;
+  background-color: #f9fafb;
+  border-radius: 10px;
   padding: 18px;
 }
 
@@ -34,9 +67,9 @@
 }
 
 .ingredient-list ul li {
-  background-color: #edf1f9;
+  background-color: #ffffff;
   border: 1px solid #dadce0;
-  border-radius: 4px;
+  border-radius: 25px;
   font-size: 1rem;
   color: #3c4043;
   list-style: none;
@@ -48,12 +81,14 @@
   align-items: center;
   justify-content: center;
   gap: 2px;
-  padding: 4px;
+  padding: 6px 10px;
 }
 
 .ingredient-name {
   overflow-wrap: break-word;
   padding: 2px;
+  font-size: 0.9rem;
+  color: #222222;
 }
 
 .remove-icon {
@@ -61,7 +96,7 @@
   display: flex;
   align-items: center;
   background: none;
-  width: 20px;
+  width: 16px;
   color: #5f6368;
   border: 0;
   margin: 0;
@@ -73,4 +108,10 @@
 .remove-icon svg:active {
   cursor: pointer;
   color: #d93025;
+}
+
+.warning {
+  color: #856404;
+  padding: 0px 6px;
+  font-size: 0.85rem;
 }

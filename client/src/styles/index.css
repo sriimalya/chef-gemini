@@ -1,7 +1,7 @@
 @import './base.css';
 @import './layout.css';
 @import './typography.css';
-@import './components/search.css';
+@import './components/input-section.css';
 @import './components/ingredient-list.css';
 @import './components/get-recipe.css';
 @import './components/recipe-box.css';
