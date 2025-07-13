@@ -2,7 +2,7 @@ import ReactMarkdown from "react-markdown";
 import { Copy } from "lucide-react";
 import { useState, useRef } from "react";
 
-export default function Recipe({ recipeRef, recipe, loading }) {
+export default function Recipe({ recipeRef, recipe, loading, isGenerating }) {
   const [copied, setCopied] = useState(false);
 
   const markdownRef = useRef(null);
@@ -22,47 +22,54 @@ export default function Recipe({ recipeRef, recipe, loading }) {
     }
   }
 
-return (
-  <div
-    ref={recipeRef}
-    className={
-      loading || recipe.length > 0 ? "recipe-box" : undefined
-    }
-  >
-    {loading && recipe.length === 0 ? (
-      <>
-        <h2>Generating your recipe...</h2>
-        <div className="dots">
-          <span></span>
-          <span></span>
-          <span></span>
+  return (
+    <div
+      ref={recipeRef}
+      className={loading || recipe.length > 0 ? "recipe-box" : undefined}
+    >
+      {/* Loading state at the start of generation */}
+      {isGenerating && (
+        <div className="generating">
+          <p>Generating recipe</p>
+          <div className="dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </div>
-      </>
-    ) : recipe.length > 0 ? (
-      <>
-        <div className="recipe-header">
-          <h2>Recipe by Chef Gemini:</h2>
-          <button
-            onClick={handleCopy}
-            aria-label="Copy recipe"
-            className="copy-btn"
-          >
-            {copied ? (
-              <span>Copied</span>
-            ) : (
-              <>
-                <Copy size={20} />
-                <span>Copy</span>
-              </>
-            )}
-          </button>
-        </div>
-        <div ref={markdownRef}>
-          <ReactMarkdown>{recipe}</ReactMarkdown>
-        </div>
-      </>
-    ) : null}
-  </div>
-);
+      )}
 
+      {/* Recipe being streamed — content is showing */}
+      {recipe.length > 0 && (
+        <>
+          {/* Only show header + copy when streaming is done */}
+          {!isGenerating && (
+            <div className="recipe-header">
+              <h2>Recipe by Chef Gemini:</h2>
+              <button
+                onClick={handleCopy}
+                aria-label="Copy recipe"
+                title="Copy recipe"
+                className="copy-btn"
+              >
+                {copied ? (
+                  <span>Copied</span>
+                ) : (
+                  <>
+                    <Copy size={20} />
+                    <span>Copy</span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* Markdown body (streaming or completed) */}
+          <div ref={markdownRef}>
+            <ReactMarkdown>{recipe}</ReactMarkdown>
+          </div>
+        </>
+      )}
+    </div>
+  );
 }

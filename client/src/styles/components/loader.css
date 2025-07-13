@@ -1,3 +1,21 @@
+.generating{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.generating p{
+  margin: 0;
+  background: linear-gradient(135deg, rgba(70, 129, 241, 1) 0%, rgba(155, 40, 176, 1) 50%, rgba(245, 82, 48, 1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
 .dots {
   display: flex;
   align-items: center;
@@ -9,7 +27,12 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #1a73e8;
+  background: linear-gradient(
+    135deg,
+    rgba(70, 129, 241, 1) 0%,
+    rgba(155, 40, 176, 1) 50%,
+    rgba(245, 82, 48, 1) 100%
+  );
   animation: pulse 1.2s infinite ease-in-out;
   display: inline-block;
 }
@@ -17,14 +40,13 @@
 .dots span:nth-child(1) {
   animation-delay: 0s;
 }
-
 .dots span:nth-child(2) {
   animation-delay: 0.2s;
 }
-
 .dots span:nth-child(3) {
   animation-delay: 0.4s;
 }
+
 
 @keyframes pulse {
   0%, 80%, 100% {

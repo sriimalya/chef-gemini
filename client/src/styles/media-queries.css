@@ -33,11 +33,11 @@
   }
 
   .form-headings h2 {
-    font-size: 0.94rem;
+    font-size: 1rem;
   }
 
   .form-headings p {
-    font-size: 0.72rem;
+    font-size: 0.8rem;
   }
 
   .ingredient-form {
@@ -50,13 +50,13 @@
 
   .input-section>input {
     width: 65%;
-    padding: 12px 14px;
+    padding: 14px 14px;
     font-size: 0.9rem;
   }
 
   .input-section .add-button {
     width: 20%;
-    padding: 10px 6px;
+    padding: 12px 6px;
   }
 
   .add-button .text {
@@ -80,31 +80,27 @@
     gap: 6px;
   }
 
-  .ingredient-list ul li {
-    font-size: 0.85rem;
-  }
-
   .list-content {
     gap: 2px;
     padding: 4px 8px;
   }
 
   .ingredient-name {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     padding: 2px;
   }
 
   .remove-icon {
-    width: 14px;
+    width: 16px;
   }
 
   .warning {
     font-size: 0.7rem;
   }
 
-  .get-recipe {
+  .get-recipe-btn {
     padding: 16px 20px;
-    font-weight: 600;
+    font-weight: bold;
     font-size: 0.9rem;
   }
 
@@ -116,6 +112,7 @@
   }
 
   .recipe-box {
+    padding: 18px;
     margin-top: 20px;
   }
 

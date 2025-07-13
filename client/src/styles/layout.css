@@ -59,11 +59,11 @@ main {
 
 @media (max-width: 480px) {
   header {
-    padding: 14px 26px;
+    padding: 16px 26px;
   }
 
   .left-item img {
-    width: 22px;
+    width: 24px;
   }
 
   .left-item p {
@@ -73,16 +73,16 @@ main {
   }
 
   .right-item {
-    gap: 6px;
+    gap: 8px;
   }
 
   .right-item .icon {
-    width: 22px;
+    width: 24px;
   }
 
   .user-icon {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
   }
 
   main {

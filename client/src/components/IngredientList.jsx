@@ -61,10 +61,12 @@ export default function IngredientList({
 
           <div className="ingredient-list-section">
             {/* ingredient-list */}
-            {ingredients.length > 0 && (
+            {ingredients.length > 0 ? (
               <div className="ingredient-list">
                 <ul>{ingredientListItems}</ul>
               </div>
+            ) : (
+              <p className="no-ingredients">No ingredients yet.</p>
             )}
 
             {/* warning */}
@@ -82,7 +84,7 @@ export default function IngredientList({
             ) : (
               <button
                 onClick={ingredients.length >= 2 ? getRecipe : undefined}
-                className="get-recipe"
+                className="get-recipe-btn"
                 disabled={ingredients.length < 2}
               >
                 Get a recipe with Chef Gemini

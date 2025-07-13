@@ -1,31 +1,5 @@
-.get-recipe {
-  border: none;
-  width: 100%;
-  border-radius: 10px;
-  background: linear-gradient(135deg,rgba(70, 129, 241, 1) 0%, rgba(155, 40, 176, 1) 50%, rgba(245, 82, 48, 1) 100%);
-  color: #ffffff;
-  padding: 14px 18px;
-  font-family: 'Inter', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.get-recipe button:hover {
-  background-color: #185abc;
-}
-
-.get-recipe button:active {
-  background-color: #1a73e8;
-}
-
-button.get-recipe:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.stop-btn{
+.get-recipe-btn,
+.stop-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,14 +7,29 @@ button.get-recipe:disabled {
   border: none;
   width: 100%;
   border-radius: 10px;
-  background: linear-gradient(135deg,rgba(70, 129, 241, 1) 0%, rgba(155, 40, 176, 1) 50%, rgba(245, 82, 48, 1) 100%);
+  background: linear-gradient(135deg, rgba(70, 129, 241, 1) 0%, rgba(155, 40, 176, 1) 50%, rgba(245, 82, 48, 1) 100%);
   color: #ffffff;
   padding: 14px 18px;
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: filter 0.2s ease;
+}
+
+.get-recipe-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.get-recipe-btn:hover,
+.stop-btn:hover {
+  filter: brightness(0.9);
+}
+
+.get-recipe-btn:active,
+.stop-btn:active {
+  filter: brightness(0.8);
 }
 
 .stop-icon{
