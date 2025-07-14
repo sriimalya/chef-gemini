@@ -55,18 +55,15 @@ export default function Main() {
     });
 
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE}/get-recipe`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getAccessToken()}`,
-          },
-          body: JSON.stringify({ ingredients: ingredients.map((i) => i.name) }),
-          signal: controller.signal,
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/get-recipe`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getAccessToken()}`,
+        },
+        body: JSON.stringify({ ingredients: ingredients.map((i) => i.name) }),
+        signal: controller.signal,
+      });
 
       if (res.status === 401) {
         setRecipe("Session expired. Please log in again.");
@@ -96,7 +93,13 @@ export default function Main() {
           startTransition(() => {
             setRecipe((prev) => prev + char);
           });
-          await new Promise(requestAnimationFrame);
+          await new Promise((r) => {
+            if (document.visibilityState === "visible") {
+              requestAnimationFrame(r);
+            } else {
+              setTimeout(r, 0); 
+            }
+          });
         }
       }
 
