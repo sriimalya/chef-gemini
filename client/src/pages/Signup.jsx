@@ -1,14 +1,16 @@
 import { useEffect, useActionState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import useAuth from "../auth/useAuth";
 
 export default function Signup() {
   const { signup, user, loading } = useAuth();
   const navigate = useNavigate();
 
-  if (!loading && user) {
-    navigate("/");
-  }
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/");
+    }
+  }, [loading, user, navigate]);
 
   const [signedUpState, submitAction, isPending] = useActionState(
     handleSignup,
@@ -41,37 +43,50 @@ export default function Signup() {
   }, [signedUpState, navigate]);
 
   return (
-    <main>
-      <form action={submitAction} className="form-container">
-        <h2>Create Account</h2>
-        <label htmlFor="username">Username:</label>
-        <input
-          id="username"
-          name="username"
-          type="text"
-          placeholder="Username"
-          className="form-input"
-          required
-        />
-        <label htmlFor="email">Email:</label>
-        <input
-          id="email"
-          name="email"
-          type="text"
-          placeholder="Email"
-          className="form-input"
-          required
-        />
-        <label htmlFor="password">Password:</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Password"
-          className="form-input"
-          required
-        />
-        <button type="submit" disabled={isPending}>
+    <main className="auth-form-container">
+      <form action={submitAction} className="auth-form">
+      <h2>Create Account</h2>
+
+        <div className="form-field">
+          <label htmlFor="username">Username:</label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autoComplete="username"
+            placeholder="Username"
+            className="form-input"
+            required
+          />
+        </div>
+
+        <div className="form-field">
+          <label htmlFor="email">Email:</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            placeholder="Email"
+            className="form-input"
+            required
+          />
+        </div>
+
+        <div className="form-field">
+          <label htmlFor="password">Password:</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            placeholder="Password"
+            className="form-input"
+            required
+          />
+        </div>
+
+        <button type="submit" disabled={isPending} className="form-button">
           {isPending ? "Signing up..." : "Signup"}
         </button>
 
@@ -79,6 +94,9 @@ export default function Signup() {
           <div className="form-error">{signedUpState.error}</div>
         )}
       </form>
+
+      <div>Already have an account?</div>
+      <NavLink to="/login">Login</NavLink>
     </main>
   );
 }

@@ -27,8 +27,8 @@
   filter: brightness(0.9);
 }
 
-.get-recipe-btn:active,
-.stop-btn:active {
+.get-recipe-btn:focus-visible,
+.stop-btn:focus-visible {
   filter: brightness(0.8);
 }
 

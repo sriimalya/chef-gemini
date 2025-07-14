@@ -7,9 +7,11 @@ export default function Login() {
   const { login, user, loading } = useAuth();
   const navigate = useNavigate();
 
-  if (!loading && user) {
-    navigate("/");
-  }
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/");
+    }
+  }, [loading, user, navigate]);
 
   const [loginState, submitAction, isPending] = useActionState(handleLogin, {
     data: null,
@@ -38,29 +40,36 @@ export default function Login() {
   }, [loginState, navigate]);
 
   return (
-    <main>
-      <form action={submitAction} className="form-container">
-        <h2>Login to your account</h2>
+    <main className="auth-form-container">
+      <form action={submitAction} className="auth-form">
+      <h2>Login to your account</h2>
 
-        <label htmlFor="username">Username:</label>
-        <input
-          id="username"
-          name="username"
-          type="text"
-          placeholder="Enter your username"
-          className="form-input"
-          required
-        />
+        <div className="form-field">
+          <label htmlFor="username">Username:</label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autoComplete="username"
+            placeholder="Enter your username"
+            className="form-input"
+            required
+          />
+        </div>
 
-        <label htmlFor="password">Password</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Enter your password"
-          className="form-input"
-          required
-        />
+        <div className="form-field">
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="password"
+            placeholder="Enter your password"
+            className="form-input"
+            required
+          />
+        </div>
+
         <button type="submit" disabled={isPending} className="form-button">
           {isPending ? "Logging in..." : "Login"}
         </button>
@@ -71,11 +80,7 @@ export default function Login() {
       </form>
 
       <div>Don't have an account?</div>
-      <NavLink
-        to="/signup"
-      >
-        Signup
-      </NavLink>
+      <NavLink to="/signup">Signup</NavLink>
     </main>
   );
 }

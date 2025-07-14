@@ -47,7 +47,7 @@
   background-color: #1a60c9;
 }
 
-.input-section .add-button:active {
+.input-section .add-button:focus-visible {
   background-color: #4285f4;
 }
 

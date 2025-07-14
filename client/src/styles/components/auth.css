@@ -1,0 +1,108 @@
+.auth-form-container {
+    width: 100vw;
+    height: 100vh;
+    background-color: #f8fafd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    font-family: 'Inter', sans-serif;
+}
+
+.auth-form-container h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #202124;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
+    background-color: #ffffff;
+    padding: 32px;
+    margin-bottom: 18px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.auth-form .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.form-field label {
+    color: #5f6368;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    color: #202124;
+    transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+    border-color: #4285f4;
+    outline: none;
+}
+
+.form-button {
+    border-radius: 10px;
+    border: none;
+    padding: 14px 16px;
+    background-color: #4285f4;
+    font-family: 'Montserrat', sans-serif;
+    color: #ffffff;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    margin-top: 12px;
+}
+
+.form-button:hover {
+    background-color: #1a60c9;
+}
+
+.form-button:focus-visible {
+    background-color: #4285f4;
+    outline: none;
+}
+
+.form-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.form-error {
+    margin-top: 12px;
+    color: #d93025;
+    background: #fdecea;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    width: 100%;
+    text-align: center;
+}
+
+.auth-form-container a {
+    color: #4285f4;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+.auth-form-container a:hover {
+    text-decoration: underline;
+}
