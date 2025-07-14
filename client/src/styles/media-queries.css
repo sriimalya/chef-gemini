@@ -116,8 +116,16 @@
     margin-top: 20px;
   }
 
+  .recipe-header .copy-btn{
+    width: 30px;    
+  }
+
+  .copy-btn .copy-text{
+    display: none;
+  }
+
   .recipe-box h2 {
-    font-size: 1.2rem;
+    font-size: 1.12rem;
     line-height: 1.25;
   }
 

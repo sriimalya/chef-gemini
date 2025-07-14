@@ -1,5 +1,5 @@
 import ReactMarkdown from "react-markdown";
-import { Copy } from "lucide-react";
+import { Copy, CheckCheck } from "lucide-react";
 import { useState, useRef } from "react";
 
 export default function Recipe({ recipeRef, recipe, loading, isGenerating }) {
@@ -53,11 +53,14 @@ export default function Recipe({ recipeRef, recipe, loading, isGenerating }) {
                 className="copy-btn"
               >
                 {copied ? (
-                  <span>Copied</span>
+                  <>
+                    <CheckCheck size={20}/>
+                    <span className="copy-text">Copied</span>
+                  </>
                 ) : (
                   <>
                     <Copy size={20} />
-                    <span>Copy</span>
+                    <span className="copy-text">Copy</span>
                   </>
                 )}
               </button>
