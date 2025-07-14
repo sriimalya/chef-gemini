@@ -4,12 +4,15 @@ export const corsMiddleware = (req, res, next) => {
     process.env.FRONTEND_URL_LOCAL,
   ];
   const origin = req.headers.origin;
+  
   // 1. No ‘Access-Control-Allow-Origin’ Header
-  if (allowedOrigins.includes(origin)) {
+  if (origin && allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
-  } else {
+  } else if (origin) {
     console.warn(`Blocked request from disallowed origin: ${origin}`);
     return res.status(403).json({ error: "CORS error: Origin not allowed" });
+  } else {
+    console.log("[CORS] No origin header — likely internal/server-side request");
   }
 
   // 2. Credentials Not Allowed
