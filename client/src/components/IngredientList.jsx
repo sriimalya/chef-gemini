@@ -52,8 +52,8 @@ export default function IngredientList({
               name="ingredient"
             />
             <button type="submit" className="add-button">
-              <span class="text">Add</span>
-              <span class="icon">
+              <span className="text">Add</span>
+              <span className="icon">
                 <PlusIcon size={20} />
               </span>
             </button>

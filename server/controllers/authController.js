@@ -37,6 +37,7 @@ export const signup = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/",
     });
     console.log("[SIGNUP] Access and refresh tokens issued");
     res.status(201).json({
@@ -72,6 +73,7 @@ export const login = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/",
     });
 
     console.log("[LOGIN] Access and refresh tokens issued")
@@ -90,7 +92,8 @@ export const logout = (req, res) => {
   res.clearCookie("refreshToken", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "None",
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    path: "/",
   });
   res.status(200).json({ message: "Logout successful" });
 };
@@ -107,7 +110,7 @@ export const refreshToken = (req, res) => {
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-    console.log(`[REFRESH] Token verified for userId: ${decoded.userId}`);
+    console.log("[REFRESH] Token verified");
 
     const accessToken = jwt.sign(
       { userId: decoded.userId },

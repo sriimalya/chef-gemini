@@ -36,18 +36,57 @@ header {
   color: #484a55;
 }
 
+.user-menu {
+  position: relative;
+}
+
 .user-icon {
   all: unset;
-  width: 24px;
-  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #1a73e8;
-  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
   padding: 4px;
-  border-radius: 100%;
-  border: 0;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  padding: 10px 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  min-width: 120px;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  border: none;
+  background: none;
+  color: #202124;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: #1a60c9;
 }
 
 main {
@@ -55,7 +94,6 @@ main {
   max-width: 800px;
   margin: 0 auto;
 }
-
 
 @media (max-width: 480px) {
   header {
@@ -85,6 +123,11 @@ main {
     height: 24px;
   }
 
+  .dropdown{
+    padding: 8px 8px;
+    min-width: 80px;
+  }
+  
   main {
     padding: 32px 24px;
     max-width: 800px;
