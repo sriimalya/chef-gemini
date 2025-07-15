@@ -108,11 +108,7 @@ export default function MainContent() {
             setRecipe((prev) => prev + char);
           });
 
-          await new Promise((r) => {
-            document.visibilityState === "visible"
-              ? requestAnimationFrame(r)
-              : setTimeout(r, 0);
-          });
+      await new Promise((r) => setTimeout(r, 5));
         }
       }
 

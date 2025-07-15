@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import Recipe from "../models/Recipe.js";
-import generatePrompt from '../utils/prompt.js'
+import generatePrompt from "../utils/prompt.js";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -15,7 +15,7 @@ export const getRecipe = async (req, res) => {
       return res.status(400).json({ error: "No ingredients provided." });
     }
 
-    const prompt = generatePrompt(ingredients)
+    const prompt = generatePrompt(ingredients);
 
     res.set({
       "Content-Type": "text/plain; charset=utf-8",
@@ -37,14 +37,21 @@ export const getRecipe = async (req, res) => {
     }
     res.end();
 
-    await Recipe.create({
-      content: fullRecipeText,
-      createdBy: req.userId,
-    });
-
-    console.log("Recipe saved to DB");
+    try {
+      await Recipe.create({
+        content: fullRecipeText,
+        createdBy: req.userId,
+      });
+      console.log("Recipe saved to DB");
+    } catch (dbErr) {
+      console.error("Failed to save recipe to DB:", dbErr.message);
+    }
   } catch (error) {
     console.error("Gemini API error:", error.message || error);
-    res.status(500).json({ error: "Failed to fetch recipe." });
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Failed to fetch recipe." });
+    } else {
+      res.end();
+    }
   }
 };

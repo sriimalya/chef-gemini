@@ -1,5 +1,5 @@
 import express from "express";
-import { corsMiddleware } from './middleware/corsMiddleware.js';
+import cors from 'cors';
 import dotenv from "dotenv";
 import cookieParser from 'cookie-parser'
 
@@ -11,9 +11,28 @@ import recipeRoute from './routes/recipe.js'
 
 dotenv.config();
 const app = express();
-app.set('trust proxy', 1);
-app.use(corsMiddleware);
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL_PRODUCTION,
+  process.env.FRONTEND_URL_LOCAL,
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        console.warn(`[CORS] Blocked request from disallowed origin: ${origin}`);
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
+app.set('trust proxy', 1);
 app.use(express.json());
 app.use(cookieParser());
 
@@ -27,5 +46,12 @@ app.get("/ping", (req, res) => {
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes)
 app.use('/get-recipe', recipeRoute);
+
+app.use((err, req, res, next) => {
+  if (err.message === "Not allowed by CORS") {
+    return res.status(403).json({ error: "CORS: Origin not allowed" });
+  }
+  next(err);
+});
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
