@@ -1,4 +1,10 @@
-import { useState, useRef, useTransition } from "react";
+import {
+  useState,
+  useRef,
+  useTransition,
+  useCallback,
+  useEffect,
+} from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { getAccessToken } from "../auth/tokenStore";
@@ -7,34 +13,37 @@ import useAuth from "../auth/useAuth";
 import IngredientList from "./IngredientList";
 import Recipe from "./Recipe";
 
-export default function Main() {
+export default function MainContent() {
   const { user } = useAuth();
   const [ingredients, setIngredients] = useState([]);
-  const [loading, setLoading] = useState(false);
-
   const [recipe, setRecipe] = useState("");
-  const [recipeStale, setRecipeStale] = useState(false);
-
-  const recipeSection = useRef(null);
-  const controllerRef = useRef(null); // tracking AbortController
-
+  const [loading, setLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
+  const recipeSection = useRef(null);
+  const controllerRef = useRef(null);
   const [isPending, startTransition] = useTransition();
 
-  function handleSubmit(formData) {
-    const newIngredientName = formData.get("ingredient");
-    if (newIngredientName) {
-      const newIngredient = {
-        id: uuidv4().slice(0, 8),
-        name: newIngredientName,
-      };
-      setIngredients([newIngredient, ...ingredients]);
-      setRecipeStale(true);
-    }
-  }
+  const handleSubmit = useCallback(
+    (formData) => {
+      const newIngredientName = formData.get("ingredient");
+      if (
+        newIngredientName &&
+        !ingredients.some(
+          (i) => i.name.toLowerCase() === newIngredientName.toLowerCase()
+        )
+      ) {
+        const newIngredient = {
+          id: uuidv4().slice(0, 8),
+          name: newIngredientName,
+        };
+        setIngredients((prev) => [newIngredient, ...prev]);
+      }
+    },
+    [ingredients]
+  );
 
-  async function getRecipe() {
+  const getRecipe = useCallback(async () => {
     if (!user) {
       alert("You must be logged in to generate recipes.");
       return;
@@ -44,15 +53,16 @@ export default function Main() {
     controllerRef.current = controller;
 
     setIsGenerating(true);
-    setRecipeStale(false);
     setLoading(true);
     setRecipe("");
 
     requestAnimationFrame(() => {
-      if (recipeSection.current) {
-        recipeSection.current.scrollIntoView({ behavior: "smooth" });
-      }
+      recipeSection.current?.scrollIntoView({ behavior: "smooth" });
     });
+
+    const timeout = setTimeout(() => {
+      setRecipe("Chef Gemini is waking up... please wait ⏳");
+    }, 8000);
 
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE}/get-recipe`, {
@@ -61,9 +71,13 @@ export default function Main() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getAccessToken()}`,
         },
-        body: JSON.stringify({ ingredients: ingredients.map((i) => i.name) }),
+        body: JSON.stringify({
+          ingredients: ingredients.map((i) => i.name),
+        }),
         signal: controller.signal,
       });
+
+      clearTimeout(timeout);
 
       if (res.status === 401) {
         setRecipe("Session expired. Please log in again.");
@@ -93,12 +107,11 @@ export default function Main() {
           startTransition(() => {
             setRecipe((prev) => prev + char);
           });
+
           await new Promise((r) => {
-            if (document.visibilityState === "visible") {
-              requestAnimationFrame(r);
-            } else {
-              setTimeout(r, 0); 
-            }
+            document.visibilityState === "visible"
+              ? requestAnimationFrame(r)
+              : setTimeout(r, 0);
           });
         }
       }
@@ -116,22 +129,25 @@ export default function Main() {
       setIsGenerating(false);
       controllerRef.current = null;
     }
-  }
+  }, [user, ingredients]);
 
-  function removeIngredient(id) {
-    const newIngredients = ingredients.filter(
-      (ingredient) => ingredient.id !== id
-    );
-    setIngredients(newIngredients);
-    if (newIngredients.length < 3) setRecipe("");
-    setRecipeStale(true);
-  }
+  const removeIngredient = useCallback((id) => {
+    setIngredients((prev) => {
+      const newList = prev.filter((ingredient) => ingredient.id !== id);
+      if (newList.length < 3) setRecipe("");
+      return newList;
+    });
+  }, []);
 
-  function stopGeneration() {
-    if (controllerRef.current) {
-      controllerRef.current.abort();
-    }
-  }
+  const stopGeneration = useCallback(() => {
+    controllerRef.current?.abort();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      controllerRef.current?.abort();
+    };
+  }, []);
 
   return (
     <main>
