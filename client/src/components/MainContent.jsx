@@ -14,6 +14,7 @@ export default function Main() {
 
   const [recipe, setRecipe] = useState("");
   const [recipeStale, setRecipeStale] = useState(false);
+  const [recipeId, setRecipeId] = useState(null);
 
   const recipeSection = useRef(null);
   const controllerRef = useRef(null); // tracking AbortController
@@ -47,6 +48,7 @@ export default function Main() {
     setRecipeStale(false);
     setLoading(true);
     setRecipe("");
+    setRecipeId(null);
 
     requestAnimationFrame(() => {
       if (recipeSection.current) {
@@ -89,10 +91,28 @@ export default function Main() {
         console.log("Generation aborted.");
       });
 
+      let buffer = "";
       while (!isAborted) {
         const { done, value } = await reader.read();
         if (done) break;
-        for (const char of value) {
+
+        buffer += value;
+
+        // extract recipeId marker if present
+        const match = buffer.match(/---RECIPE_ID:([a-f0-9]{24})---/);
+        if (match && !recipeId) {
+          const id = match[1];
+          setRecipeId(id);
+          console.log("[Recipe ID]", id);
+        }
+
+        // filter out the RECIPE_ID marker before rendering
+        const filteredValue = value.replace(
+          /---RECIPE_ID:([a-f0-9]{24})---/,
+          ""
+        );
+
+        for (const char of filteredValue) {
           startTransition(() => {
             setRecipe((prev) => prev + char);
           });
@@ -130,6 +150,25 @@ export default function Main() {
     }
   }
 
+async function addToBookmark(id) {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE}/bookmark/${id}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${getAccessToken()}`,
+      },
+    });
+
+    if (!res.ok) throw new Error("Failed to bookmark");
+
+    console.log("Recipe bookmarked:", id);
+  } catch (err) {
+    console.error("Bookmark error:", err);
+    alert("Could not bookmark the recipe. Try again.");
+  }
+}
+
+
   return (
     <main>
       <IngredientList
@@ -147,6 +186,8 @@ export default function Main() {
         recipe={recipe}
         loading={loading}
         isGenerating={isGenerating}
+        recipeId={recipeId}
+        addToBookmark={addToBookmark}
       />
     </main>
   );
