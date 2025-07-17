@@ -8,10 +8,10 @@ export default function Recipe({
   loading,
   isGenerating,
   recipeId,
-  addToBookmark,
+  updateBookmarkStatus,
 }) {
   const [copied, setCopied] = useState(false);
-  const [bookmarked, setBookmarked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   const markdownRef = useRef(null);
 
@@ -30,11 +30,12 @@ export default function Recipe({
     }
   }
 
-  async function handleBookmark() {
-    if (!recipeId || bookmarked) return;
+  async function handleToggleBookmark() {
+    if (!recipeId) return;
     try {
-      await addToBookmark(recipeId); 
-      setBookmarked(true);
+      const newBookmarkState = !isBookmarked;
+      setIsBookmarked(newBookmarkState);
+      await updateBookmarkStatus(recipeId, newBookmarkState);
     } catch (err) {
       console.error("Failed to bookmark recipe:", err);
     }
@@ -62,6 +63,27 @@ export default function Recipe({
             <div className="recipe-header">
               <h2>Recipe by Chef Gemini:</h2>
               <div className="recipe-header-actions">
+                {recipeId && (
+                  <button
+                    onClick={handleToggleBookmark}
+                    aria-label="Bookmark recipe"
+                    title="Bookmark recipe"
+                    className="copy-btn"
+                  >
+                    {isBookmarked ? (
+                      <>
+                        <BookmarkCheck size={20} />
+                        {/* <span className="copy-text">Bookmarked</span> */}
+                      </>
+                    ) : (
+                      <>
+                        <Bookmark size={20} />
+                        {/* <span className="copy-text">Bookmark</span> */}
+                      </>
+                    )}
+                  </button>
+                )}
+                
                 <button
                   onClick={handleCopy}
                   aria-label="Copy recipe"
@@ -71,37 +93,16 @@ export default function Recipe({
                   {copied ? (
                     <>
                       <CheckCheck size={20} />
-                      <span className="copy-text">Copied</span>
+                      {/* <span className="copy-text">Copied</span> */}
                     </>
                   ) : (
                     <>
                       <Copy size={20} />
-                      <span className="copy-text">Copy</span>
+                      {/* <span className="copy-text">Copy</span> */}
                     </>
                   )}
                 </button>
 
-                {recipeId && (
-                  <button
-                    onClick={handleBookmark}
-                    aria-label="Bookmark recipe"
-                    title="Bookmark recipe"
-                    className="bookmark-btn"
-                    disabled={bookmarked}
-                  >
-                    {bookmarked ? (
-                      <>
-                        <BookmarkCheck size={20} />
-                        <span className="copy-text">Bookmarked</span>
-                      </>
-                    ) : (
-                      <>
-                        <Bookmark size={20} />
-                        <span className="copy-text">Bookmark</span>
-                      </>
-                    )}
-                  </button>
-                )}
               </div>
             </div>
           )}

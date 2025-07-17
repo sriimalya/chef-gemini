@@ -1,8 +1,9 @@
 import { useState, useRef, useTransition, useCallback, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { getAccessToken } from "../auth/tokenStore";
 import useAuth from "../auth/useAuth";
+import { fetchRecipe } from "../api/recipe";
+import { addBookmark, removeBookmark } from "../api/bookmark";
 
 import IngredientList from "./IngredientList";
 import Recipe from "./Recipe";
@@ -18,6 +19,7 @@ export default function MainContent() {
 
   const recipeSection = useRef(null);
   const controllerRef = useRef(null);
+  const recipeIdRef = useRef(null); // to make sure recipe id is updated immediately
 
   const handleSubmit = useCallback(
     (formData) => {
@@ -49,6 +51,7 @@ export default function MainContent() {
     setIsGenerating(true);
     setLoading(true);
     setRecipe("");
+    recipeIdRef.current = null;
     setRecipeId(null);
 
     requestAnimationFrame(() => {
@@ -60,33 +63,11 @@ export default function MainContent() {
     }, 8000);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE}/get-recipe`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${getAccessToken()}`,
-        },
-        body: JSON.stringify({
-          ingredients: ingredients.map((i) => i.name),
-        }),
-        signal: controller.signal,
-      });
-
+      const reader = await fetchRecipe(
+        ingredients.map((i) => i.name),
+        controller.signal
+      );
       clearTimeout(timeout);
-
-      // if (res.status === 401) {
-      //   setRecipe("Session expired. Please log in again.");
-      //   setLoading(false);
-      //   return;
-      // }
-
-      if (res.status === 429) {
-        setRecipe("You've hit the limit. Please try again after some time.");
-        setLoading(false);
-        return;
-      }
-
-      const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
 
       let isAborted = false;
       controller.signal.addEventListener("abort", () => {
@@ -101,16 +82,14 @@ export default function MainContent() {
         if (done) break;
 
         buffer += value;
-
-        // extract recipeId marker if present
         const match = buffer.match(/---RECIPE_ID:([a-f0-9]{24})---/);
-        if (match && !recipeId) {
+        if (match && !recipeIdRef.current) {
           const id = match[1];
+          recipeIdRef.current = id;
           setRecipeId(id);
           console.log("[Recipe ID]", id);
         }
 
-        // filter out the RECIPE_ID marker before rendering
         const filteredValue = value.replace(
           /---RECIPE_ID:([a-f0-9]{24})---/,
           ""
@@ -124,16 +103,15 @@ export default function MainContent() {
           await new Promise((r) => setTimeout(r, 5));
         }
       }
-
-      if (res.status === 500) {
-        setRecipe(
-          "Chef Gemini is currently handling too many requests. Please try again shortly."
-        );
-      }
     } catch (err) {
-      console.error(err);
-      setRecipe("Failed to load recipe.");
+      clearTimeout(timeout);
+      if (err.message.includes("Session timed out. Please refesh.")) {
+        setRecipe("Session timed out. Please refresh.");
+      } else{
+        setRecipe("Failed to load recipe.");
+      }
     } finally {
+      clearTimeout(timeout);
       setLoading(false);
       setIsGenerating(false);
       controllerRef.current = null;
@@ -158,24 +136,14 @@ export default function MainContent() {
     };
   }, []);
 
-  const addToBookmark = useCallback(async (id) => {
+  const updateBookmarkStatus = useCallback(async (id, isNowBookmarked) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE}/bookmark/${id}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${getAccessToken()}`,
-          },
-        }
-      );
+      isNowBookmarked ? await addBookmark(id) : await removeBookmark(id);
 
-      if (!res.ok) throw new Error("Failed to bookmark");
-
-      console.log("Recipe bookmarked:", id);
+      console.log(isNowBookmarked ? "Bookmark added:" : "Bookmark removed:");
     } catch (err) {
       console.error("Bookmark error:", err);
-      alert("Could not bookmark the recipe. Try again.");
+      alert("Could not update the bookmark. Try again.");
     }
   }, []);
 
@@ -197,7 +165,7 @@ export default function MainContent() {
         loading={loading}
         isGenerating={isGenerating}
         recipeId={recipeId}
-        addToBookmark={addToBookmark}
+        updateBookmarkStatus={updateBookmarkStatus}
       />
     </main>
   );

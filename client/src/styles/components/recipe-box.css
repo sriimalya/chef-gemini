@@ -50,6 +50,12 @@
   margin-bottom: 0;
 }
 
+.recipe-header-actions{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .recipe-box p {
   margin: 16px 0 16px 0;
   color: #3c4043;
