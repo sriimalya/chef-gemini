@@ -8,6 +8,7 @@ import "./config/db.js";
 import authRoutes from './routes/auth.js'
 import userRoutes from './routes/user.js'
 import recipeRoute from './routes/recipe.js'
+import bookmarkRoutes from './routes/bookmark.js'
 
 dotenv.config();
 const app = express();
@@ -46,6 +47,7 @@ app.get("/ping", (req, res) => {
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes)
 app.use('/get-recipe', recipeRoute);
+app.use('/bookmark', bookmarkRoutes)
 
 app.use((err, req, res, next) => {
   if (err.message === "Not allowed by CORS") {
