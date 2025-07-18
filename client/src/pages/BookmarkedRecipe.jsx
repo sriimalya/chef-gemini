@@ -1,16 +1,22 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import useAuth from "../auth/useAuth";
+import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../components/Loader";
-import Header from '../components/Header'
+import Header from "../components/Header";
 import { getAccessToken } from "../auth/tokenStore";
 import ReactMarkdown from "react-markdown";
 
 export default function BookmarkedRecipe() {
+  const { user, loading} = useAuth();
+  const navigate = useNavigate();
   const { id } = useParams();
   const [recipe, setRecipe] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingRecipe, setLoadingRecipe] = useState(true);
 
   useEffect(() => {
+    if (!loading && !user) {
+      navigate("/");
+    }
     async function fetchRecipeById() {
       try {
         const res = await fetch(
@@ -26,26 +32,26 @@ export default function BookmarkedRecipe() {
       } catch (err) {
         console.error("Failed to load recipe:", err);
       } finally {
-        setLoading(false);
+        setLoadingRecipe(false);
       }
     }
 
     fetchRecipeById();
-  }, [id]);
+  }, [id, user, loading, navigate]);
 
-  if (loading) return <Loader />;
+  if (loadingRecipe) return <Loader />;
   if (!recipe)
     return <div style={{ textAlign: "center" }}>Recipe not found</div>;
 
   return (
     <>
-    <Header />
-    <div className="bookmarked-recipe-container">
-      <h1>Recipe</h1>
-      <div className="recipe-box">
-        <ReactMarkdown>{recipe.content}</ReactMarkdown>
+      <Header />
+      <div className="bookmarked-recipe-container">
+        <h1>Recipe</h1>
+        <div className="recipe-box">
+          <ReactMarkdown>{recipe.content}</ReactMarkdown>
+        </div>
       </div>
-    </div>
     </>
   );
 }
