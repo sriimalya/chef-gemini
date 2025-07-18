@@ -1,0 +1,28 @@
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #f8fafd;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: conic-gradient(
+    rgba(70, 129, 241, 1),
+    rgba(155, 40, 176, 1),
+    rgba(245, 82, 48, 1),
+    rgba(70, 129, 241, 1)
+  );
+  -webkit-mask: radial-gradient(transparent 40%, black 21%);
+  mask: radial-gradient(circle at center, transparent 40%, black 21%);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

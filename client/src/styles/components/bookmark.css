@@ -1,0 +1,102 @@
+.bookmark-page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.bookmark-heading {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #333;
+}
+
+.bookmark-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.bookmark-card {
+  background-color: #fff;
+  padding: 1.25rem 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  white-space: pre-line;
+  transition: transform 0.2s ease;
+}
+
+.bookmark-card:hover {
+  transform: translateY(-2px);
+}
+
+.bookmark-date {
+  font-size: 0.875rem;
+  color: #888;
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.bookmark-empty {
+  text-align: center;
+  color: #666;
+  margin-top: 3rem;
+}
+
+
+.bookmark-card {
+  background-color: #fff;
+  padding: 1.25rem 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  white-space: pre-line;
+  transition: transform 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #e0e0e0;
+}
+
+.bookmark-card:hover {
+  transform: translateY(-2px);
+  background-color: #f9f9f9;
+}
+
+.bookmark-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: #333;
+}
+
+.bookmark-preview h2 {
+  all: unset;
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding-bottom: 15px;
+  color: #333;
+}
+
+.bookmark-preview p {
+  all: unset;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.bookmarked-recipe-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 36px;
+}
+
+.bookmarked-recipe-container h1 {
+  margin-bottom: 20px;
+  padding: 0;
+}
+
+.bookmarked-recipe-container .recipe-box {
+  margin: 0;
+}

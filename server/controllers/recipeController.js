@@ -30,17 +30,17 @@ export const getRecipe = async (req, res) => {
 
     let recipeChunks = [];
     let aborted = false;
-     req.on("close", () => {
+    req.on("close", () => {
       aborted = true;
-      console.log('Client disconnected');
+      console.log("Client disconnected");
     });
-    try{
+    try {
       for await (const chunk of response) {
-        if(aborted) break;
+        if (aborted) break;
         if (chunk.text) {
           try {
             res.write(chunk.text);
-            recipeChunks.push(chunk.text); 
+            recipeChunks.push(chunk.text);
           } catch (err) {
             // disconnection during write
             console.warn("[Stream] Write failed (likely client abort):", err);
@@ -50,24 +50,23 @@ export const getRecipe = async (req, res) => {
         }
       }
 
-      if(!aborted && recipeChunks.length>0){
-        const fullRecipeText = recipeChunks.join('');
-        try{
+      if (!aborted && recipeChunks.length > 0) {
+        const fullRecipeText = recipeChunks.join("");
+        try {
           const savedRecipe = await Recipe.create({
             content: fullRecipeText,
             createdBy: req.userId,
           });
           res.end(`\n\n---RECIPE_ID:${savedRecipe._id}---`);
           console.log("[DB] Recipe saved.");
-        } catch(dbErr){
+        } catch (dbErr) {
           console.error("DB save failed:", dbErr);
-          res.end('\n\n---RECIPE_SAVE_FAILED---');
+          res.end("\n\n---RECIPE_SAVE_FAILED---");
         }
-      } else{
+      } else {
         res.end(); // clean end for aborted streams
       }
-
-    } catch(streamErr){
+    } catch (streamErr) {
       console.error("[STREAM] Streaming error:", streamErr);
       if (!res.headersSent) {
         res.status(500).json({ error: "Streaming failed." });
@@ -79,8 +78,23 @@ export const getRecipe = async (req, res) => {
     console.error("Initial error:", error);
     if (!res.headersSent) {
       res.status(500).json({ error: "Internal server error" });
-    } else{
+    } else {
       res.end();
     }
+  }
+};
+
+export const getRecipeById = async (req, res) => {
+  const { recipeId } = req.params;
+  const userId = req.userId;
+  try {
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+    res.json(recipe);
+  } catch (err) {
+    console.error("[Bookmarked Recipe] GET error:", err);
+    res.status(500).json({ error: "Failed to fetch bookmarked Recipe" });
   }
 };

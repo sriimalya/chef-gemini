@@ -21,3 +21,14 @@ export async function removeBookmark(id) {
 
   if (!res.ok) throw new Error("Failed to unbookmark");
 }
+
+export async function fetchBookmarks(){
+  const res= await fetch(`${import.meta.env.VITE_API_BASE}/bookmark`,{
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`
+    },
+  });
+  if(!res.ok) throw new Error("Failed to fetch bookmarks");
+  return await res.json();
+}

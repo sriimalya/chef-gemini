@@ -25,6 +25,10 @@ header {
   color: #202124;
 }
 
+a.left-link{
+  text-decoration: none;
+}
+
 .right-item {
   display: flex;
   align-items: center;

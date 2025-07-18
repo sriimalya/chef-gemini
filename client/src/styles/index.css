@@ -7,4 +7,6 @@
 @import './components/get-recipe.css';
 @import './components/recipe-box.css';
 @import './components/loader.css';
+@import './components/bookmark.css';
+@import './components/LoadingScreen.css';
 @import './media-queries.css';
