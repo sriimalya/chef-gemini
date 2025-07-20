@@ -86,7 +86,6 @@ export const getRecipe = async (req, res) => {
 
 export const getRecipeById = async (req, res) => {
   const { recipeId } = req.params;
-  const userId = req.userId;
   try {
     const recipe = await Recipe.findById(recipeId);
     if (!recipe) {

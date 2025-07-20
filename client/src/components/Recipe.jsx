@@ -8,11 +8,10 @@ export default function Recipe({
   loading,
   isGenerating,
   recipeId,
-  updateBookmarkStatus,
+  isBookmarked,
+  handleToggleBookmark,
 }) {
   const [copied, setCopied] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
-
   const markdownRef = useRef(null);
 
   function handleCopy() {
@@ -27,17 +26,6 @@ export default function Recipe({
         .catch((err) => {
           console.error("failed to copy", err);
         });
-    }
-  }
-
-  async function handleToggleBookmark() {
-    if (!recipeId) return;
-    try {
-      const newBookmarkState = !isBookmarked;
-      setIsBookmarked(newBookmarkState);
-      await updateBookmarkStatus(recipeId, newBookmarkState);
-    } catch (err) {
-      console.error("Failed to bookmark recipe:", err);
     }
   }
 
@@ -65,7 +53,7 @@ export default function Recipe({
               <div className="recipe-header-actions">
                 {recipeId && (
                   <button
-                    onClick={handleToggleBookmark}
+                    onClick={()=>{handleToggleBookmark(recipeId, isBookmarked)}}
                     aria-label="Bookmark recipe"
                     title="Bookmark recipe"
                     className="copy-btn"

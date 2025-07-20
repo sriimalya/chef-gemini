@@ -16,6 +16,7 @@ export default function MainContent() {
   const [recipeId, setRecipeId] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   const recipeSection = useRef(null);
   const controllerRef = useRef(null);
@@ -53,6 +54,7 @@ export default function MainContent() {
     setRecipe("");
     recipeIdRef.current = null;
     setRecipeId(null);
+    setIsBookmarked(false);
 
     requestAnimationFrame(() => {
       recipeSection.current?.scrollIntoView({ behavior: "smooth" });
@@ -136,12 +138,14 @@ export default function MainContent() {
     };
   }, []);
 
-  const updateBookmarkStatus = useCallback(async (id, isNowBookmarked) => {
-    try {
+  const handleToggleBookmark = useCallback(async(id, isBookmarked)=>{
+    if (!id) return;
+    const isNowBookmarked = !isBookmarked
+    setIsBookmarked(prev=>!prev)
+    try{
       isNowBookmarked ? await addBookmark(id) : await removeBookmark(id);
-
-      console.log(isNowBookmarked ? "Bookmark added:" : "Bookmark removed:");
-    } catch (err) {
+      console.log(isNowBookmarked? "Bookmark added" : "Bookmark removed");
+    } catch(err){
       console.error("Bookmark error:", err);
       alert("Could not update the bookmark. Try again.");
     }
@@ -165,7 +169,8 @@ export default function MainContent() {
         loading={loading}
         isGenerating={isGenerating}
         recipeId={recipeId}
-        updateBookmarkStatus={updateBookmarkStatus}
+        isBookmarked={isBookmarked}
+        handleToggleBookmark={handleToggleBookmark}
       />
     </main>
   );

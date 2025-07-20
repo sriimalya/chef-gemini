@@ -22,7 +22,10 @@ export const getBookmarks = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const bookmarks = await Bookmark.find({ user: userId }).populate("recipe");
+    const bookmarks = await Bookmark.find({ user: userId })
+      .populate({ path: "recipe", select: "_id content createdAt" })
+      .lean();
+
     res.json(bookmarks);
   } catch (err) {
     console.error("[Bookmark] GET error:", err);
@@ -35,7 +38,10 @@ export const removeBookmark = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const deleted = await Bookmark.findOneAndDelete({ user: userId, recipe: recipeId });
+    const deleted = await Bookmark.findOneAndDelete({
+      user: userId,
+      recipe: recipeId,
+    });
     if (!deleted) {
       return res.status(404).json({ message: "Bookmark not found" });
     }
