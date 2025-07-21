@@ -8,12 +8,13 @@ import { Suspense, lazy } from "react";
 import { AuthProvider } from "./auth/AuthProvider";
 import useAuth from "./auth/useAuth";
 import Loader from "./components/Loader";
+import Layout from "./components/Layout";
 
-const Signup = lazy(() => import("./pages/Signup"));
-const Login = lazy(() => import("./pages/Login"));
-const Home = lazy(() => import("./pages/Home"));
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 const Bookmark = lazy(() => import("./pages/Bookmarks"));
-const BookmarkedRecipe = lazy(()=> import("./pages/BookmarkedRecipe"))
+const BookmarkedRecipe = lazy(() => import("./pages/BookmarkedRecipe"));
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -33,19 +34,14 @@ export default function App() {
               path="/"
               element={
                 <ProtectedRoute>
-                  <Home />
+                  <Layout />
                 </ProtectedRoute>
               }
-            />
-            <Route
-              path="/bookmarks"
-              element={
-                <ProtectedRoute>
-                  <Bookmark />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/get-recipe/:id" element={<BookmarkedRecipe />} />
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="bookmarks" element={<Bookmark />} />
+              <Route path="get-recipe/:id" element={<BookmarkedRecipe />} />
+            </Route>
           </Routes>
         </Suspense>
       </AuthProvider>

@@ -4,7 +4,6 @@ import ReactMarkdown from "react-markdown";
 import { fetchBookmarks } from "../api/bookmark";
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
-import Header from "../components/Header";
 
 export default function Bookmark() {
   const [bookmarks, setBookmarks] = useState([]);
@@ -40,7 +39,6 @@ export default function Bookmark() {
 
   return (
     <>
-      <Header />
       <div className="bookmark-page">
         <h2 className="bookmark-heading">Your Bookmarked Recipes</h2>
         <div className="bookmark-list">

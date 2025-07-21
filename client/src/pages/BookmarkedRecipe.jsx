@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import useAuth from "../auth/useAuth";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../components/Loader";
-import Header from "../components/Header";
 import { getAccessToken } from "../auth/tokenStore";
 import ReactMarkdown from "react-markdown";
 
@@ -45,7 +44,6 @@ export default function BookmarkedRecipe() {
 
   return (
     <>
-      <Header />
       <div className="bookmarked-recipe-container">
         <h1>Recipe</h1>
         <div className="recipe-box">

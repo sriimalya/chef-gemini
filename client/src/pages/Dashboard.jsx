@@ -5,10 +5,10 @@ import useAuth from "../auth/useAuth";
 import { fetchRecipe } from "../api/recipe";
 import { addBookmark, removeBookmark } from "../api/bookmark";
 
-import IngredientList from "./IngredientList";
-import Recipe from "./Recipe";
+import IngredientList from "../components/IngredientList";
+import Recipe from "../components/Recipe";
 
-export default function MainContent() {
+export default function Dashboard() {
   const { user } = useAuth();
   const [ingredients, setIngredients] = useState([]);
   const [recipe, setRecipe] = useState("");
