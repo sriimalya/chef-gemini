@@ -5,11 +5,11 @@ import { setAccessToken, getAccessToken, clearAccessToken } from "./tokenStore";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(()=>{
-    try{
-      const stored= sessionStorage.getItem("chef-user");
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = sessionStorage.getItem("chef-user");
       return stored ? JSON.parse(stored) : null;
-    } catch{
+    } catch {
       return null;
     }
   });
@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
 
   const lastPingTimeRef = useRef(0); // Cache ping to avoid duplicates
 
-  const waitForServerWakeup = async (maxAttempts = 5, delayMs = 300) => {
+  const waitForServerWakeup = async (maxAttempts = 3, delayMs = 200) => {
     const now = Date.now();
     if (now - lastPingTimeRef.current < 10_000) return; // Skip if pinged recently
     lastPingTimeRef.current = now;
@@ -65,34 +65,76 @@ export const AuthProvider = ({ children }) => {
       }
 
       // Case 2: No access token — try refresh
-      await waitForServerWakeup();
+      const wakeUpPromise = waitForServerWakeup();
+      const refreshPromise = api
+        .post("/auth/refresh-token")
+        .catch((err) => err);
 
       try {
-        console.log("[Auth] No access token. Trying refresh...");
-        const res = await api.post("/auth/refresh-token");
+        const [_, refreshResult] = await Promise.allSettled([
+          waitForServerWakeup(),
+          api.post("/auth/refresh-token").catch((err) => err),
+        ]);
 
-        if (res.status === 204) {
+        if (
+          refreshResult.status === "fulfilled" &&
+          refreshResult.value.status !== 204
+        ) {
+          const newToken = refreshResult.value.data.token;
+          setAccessToken(newToken);
+          const userRes = await api.get("/user/me");
+          setUser(userRes.data.user);
+          sessionStorage.setItem(
+            "chef-user",
+            JSON.stringify(userRes.data.user)
+          );
+          console.log("[Auth] Auto-login successful.");
+        } else if (
+          refreshResult.status === "fulfilled" &&
+          refreshResult.value.status === 204
+        ) {
           console.warn("[Auth] No refresh token found (204)");
           setUser(null);
           sessionStorage.removeItem("chef-user");
-          return;
+        } else {
+          console.warn(
+            "[Auth] Refresh failed or network error. User is not logged in."
+          );
+          clearAccessToken();
+          setUser(null);
+          sessionStorage.removeItem("chef-user");
         }
-
-        setAccessToken(res.data.token);
-
-        const userRes = await api.get("/user/me");
-        setUser(userRes.data.user);
-        sessionStorage.setItem("chef-user", JSON.stringify(userRes.data.user));
-        console.log("[Auth] Auto-login successful.");
-      } catch (err) {
-        console.log("Auto-login failed:", err.message);
-        clearAccessToken();
-        setUser(null);
-        sessionStorage.removeItem("chef-user");
       } finally {
         setLoading(false);
         console.timeEnd("[Auth] Initialization");
       }
+
+      // try {
+      //   console.log("[Auth] No access token. Trying refresh...");
+      //   const res = await api.post("/auth/refresh-token");
+
+      //   if (res.status === 204) {
+      //     console.warn("[Auth] No refresh token found (204)");
+      //     setUser(null);
+      //     sessionStorage.removeItem("chef-user");
+      //     return;
+      //   }
+
+      //   setAccessToken(res.data.token);
+
+      //   const userRes = await api.get("/user/me");
+      //   setUser(userRes.data.user);
+      //   sessionStorage.setItem("chef-user", JSON.stringify(userRes.data.user));
+      //   console.log("[Auth] Auto-login successful.");
+      // } catch (err) {
+      //   console.log("Auto-login failed:", err.message);
+      //   clearAccessToken();
+      //   setUser(null);
+      //   sessionStorage.removeItem("chef-user");
+      // } finally {
+      //   setLoading(false);
+      //   console.timeEnd("[Auth] Initialization");
+      // }
     };
 
     initializeUser();
