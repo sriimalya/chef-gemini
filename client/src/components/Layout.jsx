@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
-import Header from "./Header";
+import { lazy } from "react";
+const Header = lazy(()=>import("./Header"))
 
 export default function Layout() {
 

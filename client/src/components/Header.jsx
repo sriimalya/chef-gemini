@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../auth/useAuth";
 
 import ChefIcon from "../assets/chef-icon.png";
-import { HistoryIcon, Bookmark, LogOutIcon } from "lucide-react";
+import { Bookmark, LogOutIcon } from "lucide-react";
 
 function Header() {
   const { user, logout } = useAuth();

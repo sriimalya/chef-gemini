@@ -1,12 +1,13 @@
 import { useState, useRef, useTransition, useCallback, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { lazy } from "react";
 
 import useAuth from "../auth/useAuth";
 import { fetchRecipe } from "../api/recipe";
 import { addBookmark, removeBookmark } from "../api/bookmark";
 
-import IngredientList from "../components/IngredientList";
-import Recipe from "../components/Recipe";
+const IngredientList = lazy(()=>import("../components/IngredientList"))
+const Recipe = lazy(()=>import ("../components/Recipe"))
 
 export default function Dashboard() {
   const { user } = useAuth();

@@ -10,9 +10,9 @@ import useAuth from "./auth/useAuth";
 import Loader from "./components/Loader";
 import Layout from "./components/Layout";
 
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+const Signup = lazy(()=>import("./pages/Signup")) 
+const Login = lazy(()=>import("./pages/Login"))
+const Dashboard = lazy(()=> import("./pages/Dashboard"))
 const Bookmark = lazy(() => import("./pages/Bookmarks"));
 const BookmarkedRecipe = lazy(() => import("./pages/BookmarkedRecipe"));
 
