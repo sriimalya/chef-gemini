@@ -24,7 +24,7 @@ export const getRecipe = async (req, res) => {
     res.flushHeaders();
 
     const response = await ai.models.generateContentStream({
-      model: "gemini-2.5-flash-lite-preview-06-17",
+      model: "gemini-2.5-flash-lite",
       contents: prompt,
     });
 
